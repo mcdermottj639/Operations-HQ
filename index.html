@@ -138,10 +138,27 @@ details.more{border-top:1px solid var(--line);margin-top:10px}details.more>summa
  html.fold .shelf{display:flex;flex:none;height:var(--shelf-h,clamp(150px,27dvh,220px));margin:10px 0 var(--fold-gap,10px);background:var(--accentBg);border:1px solid var(--accentLine);border-radius:14px;padding:14px 16px;flex-direction:column;justify-content:space-between;gap:8px;overflow:hidden}
  html.fold .shelf h2{font-size:20px;letter-spacing:-.03em}.shelf-chips{display:flex;gap:6px;flex-wrap:wrap}
  html.fold .view.active{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:4px 2px 16px}
- html.fold .page-head .sub,html.fold .roles,html.fold .snap{display:none}
+ html.fold .page-head .sub{display:none}
  html.fold h1{font-size:22px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+
+/* status */
+:root{--bad:#ff8f8f;--badBg:#3a2224;--badLine:#6b3a3d}html.light{--bad:#b3262b;--badBg:#fde8e8;--badLine:#f0bcbc}
+.pill.bad{background:var(--badBg);border-color:var(--badLine);color:var(--bad)}.stat-val.bad{color:var(--bad)}
+.hbar{display:flex;height:14px;border-radius:999px;overflow:hidden;gap:2px;background:var(--panel2)}.hbar i{display:block;height:100%;min-width:6px}
+.hbar .ok,.sw.ok,.sdot.ok{background:var(--accent)}.hbar .norec,.sw.norec,.sdot.norec{background:var(--warn)}.hbar .new,.sw.new,.sdot.new{background:var(--soft)}.hbar .fail,.sw.fail,.sdot.fail{background:var(--bad)}.hbar .sched{background:var(--blue)}
+.legend{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:9px}.legend span{display:inline-flex;align-items:center;gap:6px}.sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+.areas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.area{display:block;width:100%;border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:11px 12px;min-width:0;min-height:84px}.area:hover{border-color:var(--accentLine)}.area-top{display:flex;justify-content:space-between;align-items:center;gap:8px}.area-name{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:14px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.area-n{font-size:20px;font-weight:780;letter-spacing:-.04em}.area .hbar{height:8px;margin:8px 0 6px}.area-foot{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+details.group{border-top:1px solid var(--line);scroll-margin-top:calc(var(--topbar) + var(--sat) + 8px)}#task-list{scroll-margin-top:calc(var(--topbar) + var(--sat) + 60px)}details.group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:52px}details.group>summary::-webkit-details-marker{display:none}.g-name{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:15px;flex:0 0 42%;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.g-bar{flex:1;min-width:0}.g-bar .hbar{height:8px}.g-n{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;flex:none;min-width:34px;text-align:right}.g-body{padding-bottom:8px}
+.trow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px dashed var(--line)}.sdot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}.trow-copy{flex:1;min-width:0}.trow-name{font-size:14px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trow-cad{font-size:12px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trow-last{font-size:12px;font-weight:650;color:var(--muted);white-space:nowrap;flex:none;text-align:right}.trow-last.norec{color:var(--warn)}.trow-last.fail{color:var(--bad)}
+.row-title.wrap{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.3}
+.quiet{color:var(--muted);font-size:14px;padding:6px 0}
+.event-node.new{background:var(--soft)}
+@media(max-width:359px){.areas{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:739px){#tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}#tiles .stat{padding:10px 9px}#tiles .stat-val{font-size:24px}#tiles .stat-head{font-size:12px}}
+@media(max-width:339px){#tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.areas .area:last-child:nth-child(odd){grid-column:1/-1}
 </style>
 </head>
 <body>
@@ -172,18 +189,18 @@ details.more{border-top:1px solid var(--line);margin-top:10px}details.more>summa
  <div class="nav-label">Workspace</div>
  <button class="nav-item" data-view="overview" aria-current="page"><svg class="icon"><use href="#i-home"/></svg><span>Overview</span></button>
  <button class="nav-item" data-view="projects"><svg class="icon"><use href="#i-grid"/></svg><span>Projects</span><span class="count">8</span></button>
- <button class="nav-item" data-view="automations"><svg class="icon"><use href="#i-activity"/></svg><span>Tasks</span><span class="count">5</span></button>
+ <button class="nav-item" data-view="automations"><svg class="icon"><use href="#i-activity"/></svg><span>Tasks</span><span class="count" id="count-tasks"></span></button>
  <button class="nav-item" data-view="decisions"><svg class="icon"><use href="#i-checks"/></svg><span>Decisions</span></button>
  <div class="nav-label" style="margin-top:12px">Reference</div>
  <button class="nav-item" data-view="sources"><svg class="icon"><use href="#i-folder"/></svg><span>Sources</span></button>
- <div class="rail-bottom"><span class="pill gray" style="justify-self:start">Snapshot · not live</span><span>Audited Nov 16, 2026. Read-only: nothing here trades, lists or runs a task.</span></div>
+ <div class="rail-bottom"><span id="asof-rail">Read-only: nothing here trades, lists or runs a task.</span></div>
 </aside>
 
 <div class="content">
 <header class="topbar">
  <div class="crumb" id="crumb">Overview</div>
  <div class="top-actions">
-  <span class="pill gray desktop">Snapshot · Nov 16</span>
+  <span class="pill gray desktop" id="asof-top">Loading…</span>
   <button id="theme-toggle" class="button icon-btn" aria-label="Switch light or dark theme"><svg class="icon"><use href="#i-sun"/></svg></button>
   <button id="fold-toggle" class="button" aria-pressed="false" aria-label="Mid-fold layout"><svg class="icon"><use href="#i-half"/></svg><span id="fold-label">Mid-fold</span></button>
   <a class="button primary desktop" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT <svg class="icon sm"><use href="#i-link"/></svg></a>
@@ -192,64 +209,43 @@ details.more{border-top:1px solid var(--line);margin-top:10px}details.more>summa
 
 <main class="main" id="main">
  <section class="shelf" aria-label="Operations pulse">
-  <div><div class="eyebrow">Operations pulse</div><h2>2 open · 1 needs you</h2></div>
-  <div class="shelf-chips"><span class="pill amber">Ledger: waiting on Claude</span><span class="pill amber">DraftKings: reconnect</span><span class="pill teal">Duo accepted</span><span class="pill gray">Snapshot Nov 16</span></div>
+  <div><div class="eyebrow" id="shelf-asof">Operations pulse</div><h2 id="shelf-title">Loading status…</h2></div>
+  <div class="shelf-chips" id="shelf-chips"></div>
  </section>
 
  <!-- OVERVIEW -->
  <section class="view active" id="view-overview" aria-label="Overview">
-  <div class="page-head"><p class="eyebrow">Audited Nov 16, 2026</p><h1>Operations overview</h1></div>
-  <div class="snap"><span class="pill gray">Snapshot · not live</span><span class="pill amber">Ledger pending</span><span class="pill teal">Duo pilot passed</span></div>
-  <div class="roles" aria-label="Who does what">
-   <div class="role"><span class="tag">Plans</span><b>ChatGPT</b><span>Research, design, review</span></div>
-   <div class="role"><span class="tag">Builds</span><b>Claude</b><span>Code, tests, releases</span></div>
-   <div class="role"><span class="tag">Records</span><b>Claudex</b><span>Evidence and handoffs</span></div>
-  </div>
-  <div class="stats">
-   <div class="stat"><div class="stat-head">ChatGPT active</div><div class="stat-val">5</div><div class="stat-foot">Enabled tasks</div></div>
-   <div class="stat"><div class="stat-head">ChatGPT paused</div><div class="stat-val">9</div><div class="stat-foot">Kept, not restarted</div></div>
-   <div class="stat"><div class="stat-head">HQ integration</div><div class="stat-val word wait">Pending</div><div class="stat-foot">Claude ledger</div></div>
-   <div class="stat"><div class="stat-head">Duo pilot</div><div class="stat-val word ok">Passed</div><div class="stat-foot">Accepted on device</div></div>
-  </div>
+  <div class="page-head"><p class="eyebrow" data-asof>Loading status…</p><h1>Operations overview</h1></div>
+  <div id="stale"></div>
+  <div class="stats" id="tiles"></div>
+  <section class="panel" style="margin-bottom:14px"><div class="panel-pad">
+   <div class="panel-head"><h2>Last-run health</h2><button class="link" data-view="automations">All tasks <svg class="icon sm"><use href="#i-chev"/></svg></button></div>
+   <div id="health"></div>
+  </div></section>
   <div class="columns"><div class="stack">
    <section class="panel"><div class="panel-pad">
-    <div class="panel-head"><h2>Needs attention</h2><span class="pill amber">2 open</span></div>
-    <a class="row" target="_blank" rel="noopener noreferrer" href="https://docs.google.com/document/d/1oyJS2uyoBF8-TET3fLxU-hvlke9U805GXNhFjMb4k8Q/edit">
-     <div class="glyph orange"><svg class="icon"><use href="#i-activity"/></svg></div>
-     <div class="row-copy"><div class="row-title">Claude task ledger</div><div class="row-desc">Approved. No verified run yet.</div><div class="row-meta"><span class="pill gray">Waiting on Claude</span><span class="pill gray">OPS-20261116-01</span></div></div>
-     <div class="row-end"><svg class="icon"><use href="#i-link"/></svg></div></a>
-    <a class="row" target="_blank" rel="noopener noreferrer" href="https://docs.google.com/document/d/1Ayh9Sfaff1hXQ2aVK4vreLPpdrHqoZSHebPrJLk79lo/edit">
-     <div class="glyph orange"><svg class="icon"><use href="#i-alert"/></svg></div>
-     <div class="row-copy"><div class="row-title">DraftKings refresh blocked</div><div class="row-desc">Connector error 403 since Nov 12.</div><div class="row-meta"><span class="pill amber">Waiting on you · reconnect</span></div></div>
-     <div class="row-end"><svg class="icon"><use href="#i-link"/></svg></div></a>
-    <details class="more"><summary>What these mean</summary><div class="fold"><p><b>Ledger:</b> the existing Claudex sync should publish redacted task outcomes. Until one run is read back, Claude task status here stays unverified.</p><p style="margin-top:8px"><b>DraftKings:</b> the Sports Hub handoff reports the connector failing. New evidence is not assumed until it is reconnected.</p><p style="margin-top:8px">Nothing on this page runs automatically. An approval does not skip release gates.</p></div></details>
+    <div class="panel-head"><h2>Needs you</h2><span class="pill amber" id="needs-count"></span></div>
+    <div id="needs-jack"></div>
    </div></section>
-
    <section class="panel"><div class="panel-pad">
-    <div class="panel-head"><h2>Project watch</h2><button class="link" data-view="projects">All 8 <svg class="icon sm"><use href="#i-chev"/></svg></button></div>
-    <div id="project-watch"></div>
+    <div class="panel-head"><h2>In motion</h2><span class="pill gray">Not on you</span></div>
+    <div id="needs-other"></div>
+   </div></section>
+   <section class="panel"><div class="panel-pad">
+    <div class="panel-head"><h2>What's running</h2><span class="pill gray" id="running-count"></span></div>
+    <div class="areas" id="areas"></div>
    </div></section>
   </div><div class="stack">
    <section class="panel"><div class="panel-pad">
-    <div class="panel-head"><h2>Recent milestones</h2><span class="pill gray">Nov 16</span></div>
-    <div class="timeline">
-     <div class="event"><div class="event-track"><div class="event-node"></div><div class="event-line"></div></div><div class="event-body"><div class="event-title">Buy Radar: one writer</div><div class="event-time">Claude publishes · ChatGPT researches Tue/Fri</div></div></div>
-     <div class="event"><div class="event-track"><div class="event-node"></div><div class="event-line"></div></div><div class="event-body"><div class="event-title">Sports Hub Duo pilot done</div><div class="event-time">v389 checked · device acceptance recorded</div></div></div>
-     <div class="event"><div class="event-track"><div class="event-node"></div><div class="event-line"></div></div><div class="event-body"><div class="event-title">Operations Lead contract approved</div><div class="event-time">OPS-20261116-01</div></div></div>
-    </div>
-   </div></section>
-   <section class="panel"><div class="panel-pad">
-    <div class="panel-head"><h2>Operating rules</h2><svg class="icon" style="color:var(--accent)"><use href="#i-shield"/></svg></div>
-    <details class="more flush"><summary><span class="rule">One writer per scope</span></summary><div class="fold">Claudex handles branch and document ownership.</div></details>
-    <details class="more"><summary><span class="rule">Release is not acceptance</span></summary><div class="fold">Browser, deployment and device evidence stay separate.</div></details>
-    <details class="more"><summary><span class="rule">No trading delegation</span></summary><div class="fold">Operational notifications are not execution instructions.</div></details>
+    <div class="panel-head"><h2>Project watch</h2><button class="link" data-view="projects">All 8 <svg class="icon sm"><use href="#i-chev"/></svg></button></div>
+    <div id="project-watch"></div>
    </div></section>
   </div></div>
  </section>
 
  <!-- PROJECTS -->
  <section class="view" id="view-projects" aria-label="Projects">
-  <div class="page-head"><p class="eyebrow">Project directory</p><h1>Projects</h1><p class="sub">Tap one for what is verified and what is next.</p></div>
+  <div class="page-head"><p class="eyebrow">Project directory · as of Nov 16</p><h1>Projects</h1><p class="sub">Tap one for what is verified and what is next.</p></div>
   <div class="toolbar"><label class="search"><svg class="icon"><use href="#i-search"/></svg><input id="project-search" type="search" placeholder="Search projects" aria-label="Search projects" autocomplete="off"></label>
    <div class="filters" id="project-filters" role="group" aria-label="Filter projects"><button class="filter" data-filter="all" aria-pressed="true">All</button><button class="filter" data-filter="verified" aria-pressed="false">Verified</button><button class="filter" data-filter="inprogress" aria-pressed="false">Active</button><button class="filter" data-filter="hold" aria-pressed="false">Hold</button></div></div>
   <div class="projects" id="projects-grid"></div>
@@ -258,34 +254,56 @@ details.more{border-top:1px solid var(--line);margin-top:10px}details.more>summa
 
  <!-- TASKS -->
  <section class="view" id="view-automations" aria-label="Tasks">
-  <div class="page-head"><p class="eyebrow">Automation inventory</p><h1>Tasks</h1></div>
-  <div class="notice"><svg class="icon"><use href="#i-alert"/></svg><div>Snapshot from the Nov 16 audit. Not a live task monitor.</div></div>
-  <div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:420px"><div class="stat"><div class="stat-head">Enabled</div><div class="stat-val">5</div><div class="stat-foot">ChatGPT tasks</div></div><div class="stat"><div class="stat-head">Paused</div><div class="stat-val">9</div><div class="stat-foot">Not restarted</div></div></div>
-  <div class="columns"><section class="panel"><div class="panel-pad">
-   <div class="panel-head"><div><h2>ChatGPT schedule</h2><p class="sub">Eastern Time</p></div><span class="pill teal">Read-only</span></div>
-   <div id="task-list"></div>
-   <details class="more"><summary>9 paused tasks</summary><div class="fold" id="paused-list"></div></details>
-  </div></section>
-  <section class="panel"><div class="panel-pad">
-   <div class="panel-head"><h2>Claude scheduler</h2><span class="pill amber">Not connected</span></div>
-   <p class="sub" style="margin:0 0 4px">Status shows here once the shared ledger has a verified run.</p>
-   <details class="more"><summary>Why it is blank</summary><div class="fold">Claude's Nov 16 audit lists its Apex, Agentic, Sports Hub, Card Vault, app health, research and coordination workflows. Their last-run results are Claude-attributed until they appear in the shared ledger, so this page does not claim a task ran or succeeded from an old note.</div></details>
-   <a class="link" href="https://docs.google.com/document/d/13ndXp8KyFfrsUJmiPSgQUsq-k6QiYY1951BmxS8iiUQ/edit" target="_blank" rel="noopener noreferrer">Open integration audit <svg class="icon sm"><use href="#i-link"/></svg></a>
-  </div></section></div>
+  <div class="page-head"><p class="eyebrow" data-asof>Loading status…</p><h1>Tasks</h1></div>
+  <div class="stats" id="task-tiles" style="grid-template-columns:repeat(3,minmax(0,1fr));max-width:560px"></div>
+  <div class="columns"><div class="stack">
+   <section class="panel"><div class="panel-pad">
+    <div class="panel-head"><div><h2>Claude tasks</h2><p class="sub">Eastern Time · tap a group</p></div><span class="pill teal">Read-only</span></div>
+    <div id="health2"></div>
+    <div id="task-groups" style="margin-top:6px"></div>
+    <details class="more"><summary>How to read this</summary><div class="fold"><p><b>Ran OK:</b> Claude's scheduler recorded a successful run.</p><p style="margin-top:6px"><b>No status recorded:</b> the task fired but the scheduler stored no result, so check its output.</p><p style="margin-top:6px"><b>First run pending:</b> new task that has not run yet.</p><p style="margin-top:6px">Status comes from Claude's own scheduler by way of the shared ledger. Nothing here creates, starts or changes a task.</p></div></details>
+    <details class="more"><summary id="cpaused-sum">Paused</summary><div class="fold" id="cpaused"></div></details>
+   </div></section>
+  </div><div class="stack">
+   <section class="panel" id="firsts-panel"><div class="panel-pad">
+    <div class="panel-head"><h2>First runs pending</h2><span class="pill gray" id="firsts-count"></span></div>
+    <div id="firsts"></div>
+   </div></section>
+   <section class="panel"><div class="panel-pad">
+    <div class="panel-head"><div><h2>ChatGPT tasks</h2><p class="sub">Its own Nov 16 inventory</p></div><span class="pill blue">5 active</span></div>
+    <div id="task-list"></div>
+    <details class="more"><summary>9 paused</summary><div class="fold" id="paused-list"></div></details>
+   </div></section>
+  </div></div>
  </section>
 
  <!-- DECISIONS -->
  <section class="view" id="view-decisions" aria-label="Decisions">
-  <div class="page-head"><p class="eyebrow">Decision register</p><h1>What you approved</h1><p class="sub">Approved is not the same as finished.</p></div>
+  <div class="page-head"><p class="eyebrow">Decision register · as of Nov 16</p><h1>What you approved</h1><p class="sub">Approved is not the same as finished.</p></div>
+  <div class="roles" aria-label="Who does what">
+   <div class="role"><span class="tag">Plans</span><b>ChatGPT</b><span>Research, design, review</span></div>
+   <div class="role"><span class="tag">Builds</span><b>Claude</b><span>Code, tests, releases</span></div>
+   <div class="role"><span class="tag">Records</span><b>Claudex</b><span>Evidence and handoffs</span></div>
+  </div>
   <div class="columns">
+   <div class="stack">
    <section class="panel"><div class="panel-pad">
-    <div class="panel-head"><h2>OPS-20261116-01</h2><span class="pill amber">In progress</span></div>
-    <p class="sub" style="margin:0">Ledger, notify-only handoffs, Buy Radar owner</p>
-    <div class="steps" aria-label="Progress"><div class="step done">Approved</div><div class="step done">ChatGPT side</div><div class="step now">Claude side</div><div class="step">Verified run</div></div>
-    <div class="row-meta" style="margin-top:12px"><span class="pill gray">Waiting on Claude</span><span class="pill blue">No app changes</span></div>
-    <details class="more"><summary>Full scope</summary><div class="fold">Authorized Nov 16: the existing Claudex sync publishes a redacted task ledger and forwards OPS-ID messages as notifications only. Claude makes narrow task-prompt corrections and keeps every release gate. Claude owns canonical Buy Radar publishing; ChatGPT researches Tue/Fri.</div></details>
+    <div class="panel-head"><h2>OPS-20261116-01</h2><span class="pill amber">First run pending</span></div>
+    <p class="sub" style="margin:0">Task ledger, notify-only handoffs, Buy Radar owner</p>
+    <div class="steps" aria-label="Progress"><div class="step done">Approved</div><div class="step done">ChatGPT side</div><div class="step done">Claude side</div><div class="step now">Verified run</div></div>
+    <div class="row-meta" style="margin-top:12px"><span class="pill gray">Waiting on Claude · Nov 17, 7:20 AM check</span></div>
+    <details class="more"><summary>What was done</summary><div class="fold">Approved Nov 16. Claude created the task ledger, extended the Claudex sync to refresh it twice a day and send OPS notices as notifications only, and corrected the Links improver and Design upgrades wording. Claude's Saturday task is the only Buy Radar publisher; ChatGPT researches Tue/Fri. No app code, trading permission or schedule changed. Still to see: one normal sync run.</div></details>
     <a class="link" target="_blank" rel="noopener noreferrer" href="https://docs.google.com/document/d/1oyJS2uyoBF8-TET3fLxU-hvlke9U805GXNhFjMb4k8Q/edit">Open decision evidence <svg class="icon sm"><use href="#i-link"/></svg></a>
    </div></section>
+   <section class="panel"><div class="panel-pad">
+    <div class="panel-head"><h2>Operations HQ site</h2><span class="pill amber">Duo check open</span></div>
+    <p class="sub" style="margin:0">This dashboard</p>
+    <div class="steps" aria-label="Progress"><div class="step done">Built</div><div class="step done">Live</div><div class="step done">ChatGPT review</div><div class="step now">Your Duo</div></div>
+    <div class="row-meta" style="margin-top:12px"><span class="pill amber">Waiting on you · 2 min</span></div>
+    <details class="more"><summary>Details</summary><div class="fold">Built by Claude from ChatGPT's prototype and published on GitHub Pages. ChatGPT's source review (OPS-SITE-QA-01) found one defect, the mid-fold OFF choice not surviving a reload, which is fixed. Tested in a desktop browser only.</div></details>
+   </div></section>
+   </div>
+   <div class="stack">
    <section class="panel"><div class="panel-pad">
     <div class="panel-head"><h2>OPS-PILOT-01</h2><span class="pill teal">Complete</span></div>
     <p class="sub" style="margin:0">Sports Hub v389 review</p>
@@ -293,6 +311,17 @@ details.more{border-top:1px solid var(--line);margin-top:10px}details.more>summa
     <details class="more"><summary>Details</summary><div class="fold">Browser and release chain verified. Claude recorded your phone acceptance. The pilot made no source edits and no deployment.</div></details>
     <a class="link" target="_blank" rel="noopener noreferrer" href="https://docs.google.com/document/d/1Ayh9Sfaff1hXQ2aVK4vreLPpdrHqoZSHebPrJLk79lo/edit">Open pilot handoff <svg class="icon sm"><use href="#i-link"/></svg></a>
    </div></section>
+   <section class="panel"><div class="panel-pad">
+    <div class="panel-head"><h2>Recent milestones</h2><span class="pill gray">Nov 16</span></div>
+    <div class="timeline" id="milestones"></div>
+   </div></section>
+   <section class="panel"><div class="panel-pad">
+    <div class="panel-head"><h2>Operating rules</h2><svg class="icon" style="color:var(--accent)"><use href="#i-shield"/></svg></div>
+    <details class="more flush"><summary><span class="rule">One writer per scope</span></summary><div class="fold">Claudex handles branch and document ownership.</div></details>
+    <details class="more"><summary><span class="rule">Release is not acceptance</span></summary><div class="fold">Browser, deployment and device evidence stay separate.</div></details>
+    <details class="more"><summary><span class="rule">No trading delegation</span></summary><div class="fold">Operational notifications are not execution instructions.</div></details>
+   </div></section>
+   </div>
   </div>
  </section>
 
@@ -319,56 +348,87 @@ details.more{border-top:1px solid var(--line);margin-top:10px}details.more>summa
  <div id="detail-content"></div>
 </aside>
 
+<script src="data.js?v=2"></script>
 <script>
 (()=>{'use strict';
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const I=(id,c='')=>`<svg class="icon ${c}"><use href="#i-${id}"/></svg>`;
-const D='https://docs.google.com/document/d/';
-const projects=[
- {id:'portfolio',name:'Portfolio & Apex',icon:'chart',style:'lime',state:'inprogress',status:'Research active',badge:'blue',summary:'Apex paper validation and production safeguards remain separate.',verified:'Portfolio release validation pilot exists. v2.9 is a paper-only track; results not yet graded in this snapshot.',next:'Verify prospective paper cohorts and live task evidence without altering trade authorizations.',doc:D+'1tRDoWPVmd8HhEV7-rqPoqG1cYe7Yp9lAXAasEMos5xw/edit'},
- {id:'sports',name:'Sports Hub',icon:'basket',style:'teal',state:'verified',status:'Duo accepted',badge:'teal',summary:'v389 release verified. DraftKings refresh still blocked.',verified:'GitHub CI and Pages jobs passed; device acceptance recorded by Claude Nov 16. CBB model remains on a separate review branch.',next:'Restore DraftKings connector; preserve existing CBB approval gate.',doc:D+'1Ayh9Sfaff1hXQ2aVK4vreLPpdrHqoZSHebPrJLk79lo/edit'},
- {id:'ebay',name:'Card Vault / eBay',icon:'card',style:'orange',state:'inprogress',status:'Single owner',badge:'blue',summary:'Claude owns canonical Buy Radar publishing; ChatGPT researches.',verified:'ChatGPT Tue/Fri task ownership update read back. Last published Card Vault UX reported as v72 in the handoff.',next:'Verify Claude implementation receipt and preserve separate comparison / owner event feeds.',doc:D+'1Qpg8aLmv-BR1tKX554_JXNegompKGVeRunsJsXxzNSo/edit'},
- {id:'golf',name:'Caddie HQ',icon:'golf',style:'lime',state:'verified',status:'Web verified',badge:'teal',summary:'v293 public deployment and saved club data documented.',verified:'Handoff reports v293 public asset parity; physical device and real GPS remain separate tests.',next:'Continue source-backed course onboarding; do not guess mapping coverage.',doc:D+'10TzWts8Im5hGWAcYKpHSUhuiOwJYrUii2g2TLiZtShc/edit'},
- {id:'league',name:'League History',icon:'book',style:'teal',state:'inprogress',status:'Design review',badge:'blue',summary:'Historical statistics and storylines being organized.',verified:'Handoff reports v146 deployed as of Nov 12. Phone acceptance not independently verified.',next:'Organize expanded regular-season statistics and layout without assuming new features are already shipped.',doc:D+'1hrjOhVlah-K8fPezpPfp4seSCIUJfAXP-XXLD9ljyRk/edit'},
- {id:'survivor',name:'Family Survivor',icon:'checks',style:'teal',state:'verified',status:'Deployed v93',badge:'teal',summary:'Roster shelf migration and original pick history preserved.',verified:'Handoff reports v93 live, 62 suites / 1,778 checks passing at Nov 10.',next:'No unapproved roster/schema changes.',doc:D+'1wFtICdP9iNZRKY_IN53MoHyxHurdd_3gj-g6QmmlJiQ/edit'},
- {id:'cfp',name:'CFP Study Lab',icon:'book',style:'orange',state:'hold',status:'No new claim',badge:'gray',summary:'Previous guided study release documented.',verified:'Handoff reports v2.113.0 source and Pages verified in October; no new activity inferred.',next:'Only begin new work on explicit request.',doc:D+'1WblUV8msgtOKysVg7SFZAjLIXJObKurv1EaJEEkzW0U/edit'},
- {id:'warroom',name:'Warroom',icon:'folder',style:'orange',state:'hold',status:'Unverified',badge:'gray',summary:'Repository identified; current role and deployment unverified.',verified:'Handoff confirms repository identity only.',next:'Confirm whether active before adding it to running operations.',doc:D+'1RNP97jsvO4pC44uSbUHi8YzTkSqZtALDAV176j4wd-Q/edit'}
-];
-// days: Mon..Sun
-const tasks=[
- {name:'Market & Trading Lab',sub:'Research and strategy learning',days:[1,0,1,0,0,1,0],time:'7:00 PM'},
- {name:'Business check writer',sub:'Portfolio business data',days:[1,0,0,0,0,0,0],time:'8:45 AM'},
- {name:'Card pricing & Buy Radar',sub:'Research-only; Claude publishes',days:[0,1,0,0,1,0,0],time:'7:00 PM'},
- {name:'Duo, Caddie & Sports Workshop',sub:'Separate scoped workstreams',days:[0,0,1,0,0,1,0],time:'8:00 AM'},
- {name:'Weekly finances update',sub:'Private summary',days:[0,0,0,0,0,1,0],time:'8:00 AM'}
-];
-const paused=['Caddie HQ Course Expansion','Sports Hub AI Workshop','Card Buy Radar','Claudex coordination check','Covered Call Ideas','Jarvis shutdown watch','Sports Hub evidence refresh','Robinhood refresh check','Hurdstradamus feedback reminder'];
-const sources=[
- ['HQ operating home','Roadmap, authority, briefing format',D+'1LdBhgSe5HLvNji-F6aWlMFwW6o8JM0peaXnR3Cp40q8/edit'],
- ['Claudex coordination','Cross-assistant rules and OPS-IDs',D+'1oyJS2uyoBF8-TET3fLxU-hvlke9U805GXNhFjMb4k8Q/edit'],
- ['Claude integration audit','Task-scheduler coverage, missing ledger',D+'13ndXp8KyFfrsUJmiPSgQUsq-k6QiYY1951BmxS8iiUQ/edit'],
- ['Sports Hub handoff','Duo pilot, CBB branch, deploy evidence',D+'1Ayh9Sfaff1hXQ2aVK4vreLPpdrHqoZSHebPrJLk79lo/edit'],
- ['Card Vault / eBay handoff','Buy Radar ownership, comparison scope',D+'1Qpg8aLmv-BR1tKX554_JXNegompKGVeRunsJsXxzNSo/edit'],
- ['Portfolio handoff','Apex, Agentic and release gates',D+'1tRDoWPVmd8HhEV7-rqPoqG1cYe7Yp9lAXAasEMos5xw/edit'],
- ['Caddie HQ handoff','Course catalog, swing history, deploys',D+'10TzWts8Im5hGWAcYKpHSUhuiOwJYrUii2g2TLiZtShc/edit'],
- ['League History handoff','Current release, upcoming analysis',D+'1hrjOhVlah-K8fPezpPfp4seSCIUJfAXP-XXLD9ljyRk/edit']
-];
+const H=window.HQ_DATA||{projects:[],sources:[],needs:[],chatgpt:[],chatgptPaused:[],milestones:[],D:''};
+const doc=id=>H.D+id+'/edit';
+const projects=H.projects;
 const VIEWS={overview:'Overview',projects:'Projects',automations:'Tasks',decisions:'Decisions',sources:'Sources'};
-let filter='all',search='',lastFocus=null;
+const ST={ok:'Ran OK',norec:'No status recorded',new:'First run pending',fail:'Failed'};
+const ORDER=['ok','norec','new','fail'];
+let filter='all',search='',lastFocus=null,L=null,ledgerAt=0;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pill=p=>`<span class="pill ${p.badge}">${esc(p.status)}</span>`;
 const prow=(p,cls)=>`<button class="${cls}" data-open="${p.id}" aria-label="Open ${esc(p.name)} details"><div class="glyph ${p.style}">${I(p.icon)}</div><div class="row-copy"><div class="row-line"><div class="row-title">${esc(p.name)}</div>${pill(p)}</div><div class="row-desc">${esc(p.summary)}</div></div><div class="row-end">${I('chev')}</div></button>`;
-function renderWatch(){$('#project-watch').innerHTML=projects.slice(0,5).map(p=>prow(p,'row')).join('')}
+const count=ts=>{const c={ok:0,norec:0,new:0,fail:0};ts.forEach(t=>c[t.s]=(c[t.s]||0)+1);return c};
+const hbar=(c,label)=>{const tot=ORDER.reduce((n,k)=>n+c[k],0)||1;return `<div class="hbar" role="img" aria-label="${esc(label)}">${ORDER.filter(k=>c[k]).map(k=>`<i class="${k}" style="flex:${c[k]}"></i>`).join('')}</div>`};
+const legend=c=>`<div class="legend">${ORDER.filter(k=>c[k]).map(k=>`<span><i class="sw ${k}"></i>${c[k]} ${esc(ST[k].toLowerCase())}</span>`).join('')}</div>`;
+const WHO={jack:['Waiting on you','amber'],claude:['Waiting on Claude','gray'],chatgpt:['Waiting on ChatGPT','gray'],third:['Waiting on a third party','gray']};
+
+function fmtAsOf(iso){const d=new Date(iso);if(isNaN(d))return null;const f=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(d);return f+' ET'}
+function allNeeds(){
+ const out=[];
+ if(L){
+  L.areas.forEach(a=>a.tasks.filter(t=>t.s==='fail').forEach(t=>out.push({who:'claude',title:'Task failed: '+t.n,desc:'Last run '+t.l+'.',chip:'Waiting on Claude',icon:'alert',view:'automations'})));
+  (L.blockers||[]).forEach(b=>{const i=b.text.indexOf(':'),sp=i>0&&i<90;const title=sp?b.text.slice(0,i):b.text,desc=sp?b.text.slice(i+1).trim().replace(/^./,ch=>ch.toUpperCase()):'';out.push({who:b.who,title,desc,chip:WHO[b.who][0]+(b.hint&&b.who==='jack'?' · '+b.hint:''),icon:'alert',view:'sources',wrap:true})});
+ }
+ (H.needs||[]).forEach(n=>{if(n.hideWhenLedgerAfter&&L&&Date.parse(L.asOfISO)>Date.parse(n.hideWhenLedgerAfter))return;out.push(n)});
+ return out;
+}
+const nrow=n=>{const w=WHO[n.who]||WHO.third;const inner=`<div class="glyph ${n.who==='jack'?'orange':''}">${I(n.icon||'alert')}</div><div class="row-copy"><div class="row-title${n.wrap?' wrap':''}">${esc(n.title)}</div>${n.desc?`<div class="row-desc">${esc(n.desc)}</div>`:''}<div class="row-meta"><span class="pill ${w[1]}">${esc(n.chip||w[0])}</span></div></div>`;return n.doc?`<a class="row" target="_blank" rel="noopener noreferrer" href="${doc(n.doc)}">${inner}<div class="row-end">${I('link')}</div></a>`:`<button class="row" data-view="${n.view||'automations'}">${inner}<div class="row-end">${I('chev')}</div></button>`};
+
+function renderStatus(){
+ const needs=allNeeds(),mine=needs.filter(n=>n.who==='jack'),other=needs.filter(n=>n.who!=='jack');
+ $('#needs-jack').innerHTML=mine.length?mine.map(nrow).join(''):'<div class="quiet">Nothing is waiting on you.</div>';
+ $('#needs-count').textContent=mine.length+' open';$('#needs-count').className='pill '+(mine.length?'amber':'teal');
+ $('#needs-other').innerHTML=other.length?other.map(nrow).join(''):'<div class="quiet">Nothing open.</div>';
+ const gN=H.chatgpt.length;
+ if(!L){
+  $$('[data-asof]').forEach(e=>e.textContent='Task status unavailable');
+  $('#stale').innerHTML=`<div class="notice">${I('alert')}<div>Task status did not load. Projects and decisions below are still current as of ${esc(H.projectsAsOf||'the last publish')}.</div></div>`;
+  $('#tiles').innerHTML=`<div class="stat"><div class="stat-head">Needs you</div><div class="stat-val ${mine.length?'wait':'ok'}">${mine.length}</div><div class="stat-foot">Open items</div></div><div class="stat"><div class="stat-head">ChatGPT</div><div class="stat-val">${gN}</div><div class="stat-foot">tasks</div></div>`;
+  ['#health','#health2','#areas','#task-groups','#firsts','#task-tiles'].forEach(s=>$(s).innerHTML='<div class="quiet">Unavailable.</div>');
+  $('#shelf-title').textContent=mine.length+' need you';return;
+ }
+ const tasks=L.areas.flatMap(a=>a.tasks),c=count(tasks),tot=tasks.length,asof=fmtAsOf(L.asOfISO)||'unknown';
+ const ageH=(Date.now()-Date.parse(L.asOfISO))/36e5;
+ $$('[data-asof]').forEach(e=>e.textContent='Updated '+asof);
+ const top=$('#asof-top');if(top)top.textContent='Updated '+asof;const rail=$('#asof-rail');if(rail)rail.textContent='Task status updated '+asof+'. Read-only: nothing here trades, lists or runs a task.';
+ $('#stale').innerHTML=ageH>26?`<div class="notice">${I('alert')}<div>Stale: no status refresh in ${Math.floor(ageH)} hours. Refreshes are due 7:10 AM and 9:10 PM ET.</div></div>`:'';
+ const tile=(h,v,f,cls='')=>`<div class="stat"><div class="stat-head">${h}</div><div class="stat-val ${cls}">${v}</div><div class="stat-foot">${f}</div></div>`;
+ $('#tiles').innerHTML=tile('Needs you',mine.length,'open',mine.length?'wait':'ok')+tile('Claude',tot,'tasks')+(c.fail?tile('Failed',c.fail,'last run','bad'):tile('Ran OK',c.ok,'of '+tot,'ok'))+tile('ChatGPT',gN,'tasks');
+ $('#task-tiles').innerHTML=tile('Ran OK',c.ok,'of '+tot,'ok')+tile('No status',c.norec,'Check output',c.norec?'wait':'')+(c.fail?tile('Failed',c.fail,'Last run','bad'):tile('First run',c.new,'Pending'));
+ const label=ORDER.filter(k=>c[k]).map(k=>c[k]+' '+ST[k].toLowerCase()).join(', ');
+ const hb=hbar(c,label)+legend(c);$('#health').innerHTML=hb;$('#health2').innerHTML=hb;
+ $('#running-count').textContent=(tot+gN)+' tasks';
+ $('#areas').innerHTML=L.areas.map(a=>{const ac=count(a.tasks),bits=ac.ok===a.tasks.length?'All ran OK':['fail','norec','new'].filter(k=>ac[k]).map(k=>ac[k]+' '+({norec:'no status',new:'new',fail:'failed'})[k]).join(' · ');return `<button class="area" data-area="${a.id}" aria-label="${esc(a.name)}: ${esc(bits)}"><div class="area-top"><span class="area-name">${I(a.icon,'sm')} ${esc(a.name)}</span><span class="area-n">${a.tasks.length}</span></div>${hbar(ac,bits)}<div class="area-foot">${esc(bits)}</div></button>`}).join('')+`<button class="area" data-area="chatgpt" aria-label="ChatGPT: ${gN} scheduled"><div class="area-top"><span class="area-name">${I('book','sm')} ChatGPT</span><span class="area-n">${gN}</span></div><div class="hbar"><i class="sched" style="flex:1"></i></div><div class="area-foot">${gN} scheduled</div></button>`;
+ const firsts=L.areas.flatMap(a=>a.tasks.filter(t=>t.s==='new').map(t=>({...t,area:a.name})));
+ $('#firsts-panel').hidden=!firsts.length;$('#firsts-count').textContent=firsts.length;
+ $('#firsts').innerHTML=firsts.map(t=>`<div class="event"><div class="event-track"><div class="event-node new"></div><div class="event-line"></div></div><div class="event-body"><div class="event-title">${esc(t.n)}</div><div class="event-time">${esc(t.l)} · ${esc(t.c)}</div></div></div>`).join('');
+ $('#task-groups').innerHTML=L.areas.map(a=>{const ac=count(a.tasks);return `<details class="group" id="g-${a.id}"><summary><span class="g-name">${I(a.icon,'sm')} ${esc(a.name)}</span><span class="g-bar">${hbar(ac,'')}</span><span class="g-n">${ac.ok}/${a.tasks.length}</span></summary><div class="g-body">${a.tasks.map(t=>`<div class="trow"><i class="sdot ${t.s}" title="${esc(ST[t.s])}"></i><div class="trow-copy"><div class="trow-name">${esc(t.n)}</div><div class="trow-cad">${esc(t.c)}</div></div><div class="trow-last ${t.s}"><span class="sr-only">${esc(ST[t.s])}: </span>${esc(t.l)}</div></div>`).join('')}</div></details>`}).join('');
+ $('#cpaused-sum').textContent=(L.paused||[]).length+' paused';$('#cpaused').innerHTML=(L.paused||[]).map(esc).join(' · ');
+ const side=$('#count-tasks');if(side)side.textContent=tot+gN;
+ $('#shelf-asof').textContent='Updated '+asof;
+ $('#shelf-title').textContent=`${mine.length} need${mine.length===1?'s':''} you · ${c.ok} of ${tot} ran OK`;
+ $('#shelf-chips').innerHTML=mine.slice(0,3).map(n=>`<span class="pill amber">${esc(n.title.length>30?n.title.slice(0,28)+'…':n.title)}</span>`).join('')+(c.fail?`<span class="pill bad">${c.fail} failed</span>`:'')+(c.norec?`<span class="pill gray">${c.norec} no status</span>`:'');
+}
+function renderWatch(){$('#project-watch').innerHTML=projects.slice(0,4).map(p=>prow(p,'row')).join('')}
 function renderGrid(){const v=projects.filter(p=>(filter==='all'||p.state===filter)&&`${p.id} ${p.name} ${p.summary} ${p.status}`.toLowerCase().includes(search));$('#projects-grid').innerHTML=v.map(p=>prow(p,'pcard')).join('');$('#projects-empty').hidden=v.length>0}
-function renderTasks(){const L=['M','T','W','T','F','S','S'],N=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];$('#task-list').innerHTML=tasks.map(t=>`<div class="task"><div class="task-top"><h3>${esc(t.name)}</h3><span class="task-time">${esc(t.time)}</span></div><div class="row-desc">${esc(t.sub)}</div><div class="week" role="img" aria-label="Runs ${t.days.map((d,i)=>d?N[i]:'').filter(Boolean).join(', ')} at ${esc(t.time)}">${t.days.map((d,i)=>`<span class="day${d?' on':''}">${L[i]}</span>`).join('')}</div></div>`).join('');$('#paused-list').innerHTML=paused.map(esc).join(' · ')+'<p style="margin-top:8px">Nothing here creates, starts or changes a task.</p>'}
-function renderSources(){$('#source-list').innerHTML=sources.map(([t,d,u])=>`<a class="row" href="${u}" target="_blank" rel="noopener noreferrer"><div class="glyph teal">${I('folder')}</div><div class="row-copy"><div class="row-title">${esc(t)}</div><div class="row-desc">${esc(d)}</div></div><div class="row-end">${I('link')}</div></a>`).join('')}
+function renderChatGPT(){const Ld=['M','T','W','T','F','S','S'],N=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];$('#task-list').innerHTML=H.chatgpt.map(t=>`<div class="task"><div class="task-top"><h3>${esc(t.n)}</h3><span class="task-time">${esc(t.time)}</span></div><div class="row-desc">${esc(t.sub)}</div><div class="week" role="img" aria-label="Runs ${t.days.map((d,i)=>d?N[i]:'').filter(Boolean).join(', ')} at ${esc(t.time)}">${t.days.map((d,i)=>`<span class="day${d?' on':''}">${Ld[i]}</span>`).join('')}</div></div>`).join('');$('#paused-list').innerHTML=H.chatgptPaused.map(esc).join(' · ')+'<p style="margin-top:8px">Run results for ChatGPT tasks are not visible here.</p>'}
+function renderStatic(){$('#milestones').innerHTML=H.milestones.map(m=>`<div class="event"><div class="event-track"><div class="event-node"></div><div class="event-line"></div></div><div class="event-body"><div class="event-title">${esc(m.title)}</div><div class="event-time">${esc(m.note)}</div></div></div>`).join('');$('#source-list').innerHTML=H.sources.map(([t,d,id])=>`<a class="row" href="${doc(id)}" target="_blank" rel="noopener noreferrer"><div class="glyph teal">${I('folder')}</div><div class="row-copy"><div class="row-title">${esc(t)}</div><div class="row-desc">${esc(d)}</div></div><div class="row-end">${I('link')}</div></a>`).join('')}
 function show(v,push){if(!VIEWS[v])return;$$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));$$('[data-view]').forEach(b=>{if(b.classList.contains('nav-item')||b.classList.contains('tab'))b.setAttribute('aria-current',b.dataset.view===v?'page':'false')});$('#crumb').textContent=VIEWS[v];document.title=VIEWS[v]+' · Operations HQ';const a=$('.view.active');if(a)a.scrollTop=0;window.scrollTo(0,0);if(push!==false){try{history.replaceState(null,'','#'+v)}catch(e){}}}
-function openDetail(id,from){const p=projects.find(p=>p.id===id);if(!p)return;lastFocus=from||document.activeElement;$('#detail-content').innerHTML=`<div class="glyph ${p.style}">${I(p.icon)}</div><h2>${esc(p.name)}</h2>${pill(p)}<p class="sub" style="margin:12px 0 18px;font-size:15px">${esc(p.summary)}</p><div class="block"><div class="block-label">Verified</div><div class="block-body">${esc(p.verified)}</div></div><div class="block"><div class="block-label">Next</div><div class="block-body">${esc(p.next)}</div></div><div class="block"><div class="block-label">Freshness</div><div class="block-body" style="color:var(--muted)">Handoff audit Nov 16, 2026. Not polled live.</div></div><div class="detail-actions"><a class="button primary" href="${p.doc}" rel="noopener noreferrer" target="_blank">Open handoff ${I('link','sm')}</a><button class="button" data-detail-close>Close</button></div>`;const d=$('#detail');d.inert=false;d.classList.add('show');d.scrollTop=0;$('#backdrop').classList.add('show');$('#detail-close').focus()}
+function openDetail(id,from){const p=projects.find(p=>p.id===id);if(!p)return;lastFocus=from||document.activeElement;$('#detail-content').innerHTML=`<div class="glyph ${p.style}">${I(p.icon)}</div><h2>${esc(p.name)}</h2>${pill(p)}<p class="sub" style="margin:12px 0 18px;font-size:15px">${esc(p.summary)}</p><div class="block"><div class="block-label">Verified</div><div class="block-body">${esc(p.verified)}</div></div><div class="block"><div class="block-label">Next</div><div class="block-body">${esc(p.next)}</div></div><div class="block"><div class="block-label">Freshness</div><div class="block-body" style="color:var(--muted)">Handoff audit Nov 16, 2026. Not polled live.</div></div><div class="detail-actions"><a class="button primary" href="${doc(p.doc)}" rel="noopener noreferrer" target="_blank">Open handoff ${I('link','sm')}</a><button class="button" data-detail-close>Close</button></div>`;const d=$('#detail');d.inert=false;d.classList.add('show');d.scrollTop=0;$('#backdrop').classList.add('show');$('#detail-close').focus()}
 function closeDetail(){const d=$('#detail');if(!d.classList.contains('show'))return;d.classList.remove('show');$('#backdrop').classList.remove('show');d.inert=true;if(lastFocus&&document.contains(lastFocus))lastFocus.focus();lastFocus=null}
-document.addEventListener('click',e=>{const t=e.target;const nav=t.closest('[data-view]');if(nav){show(nav.dataset.view);return}const card=t.closest('[data-open]');if(card){openDetail(card.dataset.open,card);return}if(t.closest('[data-detail-close]')||t.closest('#detail-close')||t.closest('#backdrop')){closeDetail();return}const f=t.closest('[data-filter]');if(f){filter=f.dataset.filter;$$('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',b===f?'true':'false'));renderGrid()}});
+document.addEventListener('click',e=>{const t=e.target;const ar=t.closest('[data-area]');if(ar){show('automations');const id=ar.dataset.area,g=id==='chatgpt'?$('#task-list'):$('#g-'+id);if(g){if(g.tagName==='DETAILS')g.open=true;g.scrollIntoView({block:'start'})}return}const nav=t.closest('[data-view]');if(nav){show(nav.dataset.view);return}const card=t.closest('[data-open]');if(card){openDetail(card.dataset.open,card);return}if(t.closest('[data-detail-close]')||t.closest('#detail-close')||t.closest('#backdrop')){closeDetail();return}const f=t.closest('[data-filter]');if(f){filter=f.dataset.filter;$$('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',b===f?'true':'false'));renderGrid()}});
 $('#project-search').addEventListener('input',e=>{search=e.target.value.toLowerCase().trim();renderGrid()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail()});
 window.addEventListener('hashchange',()=>show(location.hash.slice(1),false));
+
+// task status: loaded fresh on every open, and again when the app is reopened after 15+ minutes
+function loadLedger(){const s=document.createElement('script');s.src='ledger.js?t='+Date.now();s.onload=()=>{L=window.HQ_LEDGER||null;ledgerAt=Date.now();renderStatus();s.remove()};s.onerror=()=>{ledgerAt=Date.now();renderStatus();s.remove()};document.head.appendChild(s)}
 
 // theme (remembered per device)
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
@@ -377,23 +437,28 @@ function setTheme(light){root.classList.toggle('light',light);const m=$('meta[na
 setTheme(store.get('ohq-theme')==='light');
 $('#theme-toggle').addEventListener('click',()=>{const l=!root.classList.contains('light');setTheme(l);store.set('ohq-theme',l?'light':'dark')});
 
-// mid-fold: manual switch, plus automatic when the browser reports a horizontal crease
-let manual=store.get('ohq-fold')==='on',auto=false,autoOff=false;
+// mid-fold. Saved mode: auto (on only while the browser reports a horizontal crease), on, off.
+// An explicit OFF survives reloads and beats crease detection.
+let mode=store.get('ohq-fold');if(!['auto','on','off'].includes(mode))mode='auto';
+let crease=false;
 const mqV=window.matchMedia?matchMedia('(vertical-viewport-segments: 2)'):null;
 function segs(){try{return (window.viewport&&window.viewport.segments)||(window.visualViewport&&window.visualViewport.segments)||null}catch(e){return null}}
 function applyFold(){
- const s=segs();auto=false;root.style.removeProperty('--shelf-h');root.style.removeProperty('--fold-gap');
- if(s&&s.length===2&&s[0].top!==s[1].top&&innerWidth<740){auto=true;const top=s[0].height,gap=Math.max(24,s[1].top-(s[0].top+s[0].height));const tb=$('.topbar').getBoundingClientRect().height;root.style.setProperty('--shelf-h',Math.max(90,top-tb-16)+'px');root.style.setProperty('--fold-gap',(gap+12)+'px')}
- else if(mqV&&mqV.matches&&innerWidth<740){auto=true}
- const on=manual||(auto&&!autoOff);root.classList.toggle('fold',on);const b=$('#fold-toggle');b.setAttribute('aria-pressed',String(on));$('#fold-label').textContent=(auto&&!autoOff&&!manual)?'Mid-fold auto':'Mid-fold';
+ const s=segs();crease=false;root.style.removeProperty('--shelf-h');root.style.removeProperty('--fold-gap');
+ if(innerWidth<740){
+  if(s&&s.length===2&&s[0].top!==s[1].top){crease=true;const top=s[0].height,gap=Math.max(24,s[1].top-(s[0].top+s[0].height));const tb=$('.topbar').getBoundingClientRect().height;root.style.setProperty('--shelf-h',Math.max(90,top-tb-16)+'px');root.style.setProperty('--fold-gap',(gap+12)+'px')}
+  else if(mqV&&mqV.matches)crease=true;
+ }
+ const on=mode==='on'||(mode==='auto'&&crease);root.classList.toggle('fold',on);
+ $('#fold-toggle').setAttribute('aria-pressed',String(on));$('#fold-label').textContent=on&&mode==='auto'?'Mid-fold auto':mode==='off'&&crease?'Mid-fold off':'Mid-fold';
 }
-$('#fold-toggle').addEventListener('click',()=>{if(root.classList.contains('fold')){manual=false;if(auto)autoOff=true}else{manual=true;autoOff=false}store.set('ohq-fold',manual?'on':'off');applyFold()});
+$('#fold-toggle').addEventListener('click',()=>{mode=root.classList.contains('fold')?'off':(crease?'auto':'on');store.set('ohq-fold',mode);applyFold()});
 if(mqV&&mqV.addEventListener)mqV.addEventListener('change',applyFold);
 window.addEventListener('resize',applyFold);
 if(window.visualViewport)visualViewport.addEventListener('resize',applyFold);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)applyFold()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)return;applyFold();if(Date.now()-ledgerAt>9e5)loadLedger()});
 
-renderWatch();renderGrid();renderTasks();renderSources();applyFold();
+renderWatch();renderGrid();renderChatGPT();renderStatic();renderStatus();applyFold();loadLedger();
 const initial=location.hash.slice(1);if(VIEWS[initial])show(initial,false);
 })();
 </script>
