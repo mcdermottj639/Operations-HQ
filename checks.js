@@ -3,8 +3,8 @@ window.HQ_CHECKS = {
  "verifiedAtISO": "2026-11-17T07:11:00-05:00",
  "items": {
   "cbb": {
-   "state": "open",
-   "note": "Branch still unmerged; handoff still awaits Jack's publish decision.",
+   "state": "resolved",
+   "note": "CBB integrated into main via v390 merge commit on Nov 17; approval blocker cleared.",
    "atISO": "2026-11-17T07:11:00-05:00"
   }
  }
