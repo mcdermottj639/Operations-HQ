@@ -12,5 +12,10 @@ Read-only dashboard for Jack. ChatGPT (Operations Lead) owns content and design 
 - Mid-fold: glance shelf on top, the active page scrolls below, nav at the bottom. Manual switch plus automatic when the browser reports a horizontal crease. The document itself must not scroll in this mode.
 - Update this file with every change to the page, data or rules.
 
+## Publishing
+- Live: https://mcdermottj639.github.io/Operations-HQ/ — GitHub Pages serves the `gh-pages` branch.
+- Work on `main`. The `Publish to gh-pages` workflow copies `main` to `gh-pages` on every push. If it fails, push by hand: `git push origin main:gh-pages`.
+- Confirm the `pages build and deployment` run succeeded, then load the live URL.
+
 ## Log
 - 2026-11-16 — v1 (Claude). Rebuilt ChatGPT's prototype for GitHub Pages. Fixed the broken Decisions layout and grey default buttons; raised text from 9–11px to 12px+; turned paragraphs into tiles, tap rows, a weekly schedule strip and progress steppers with details folded; added "waiting on" chips, safe-area padding (Duo status-icon strip), page lock against overscroll, remembered theme and mid-fold, automatic crease detection, home-screen icon and manifest. Browser-tested at the sizes above with a simulated fold: no overflow, no page errors. Physical iPhone Duo not verified.
