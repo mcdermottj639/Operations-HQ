@@ -13,9 +13,15 @@ window.HQ_DATA = {
   // who: jack | claude | chatgpt | third. hideWhenLedgerAfter: item clears itself once a
   // ledger refresh newer than that time has been published.
   needs: [
-    {who:'jack', title:'Sports Hub CBB model', desc:'Built on a review branch. Not merged without your OK.', chip:'Waiting on you · approve or park', icon:'basket', doc:'1Ayh9Sfaff1hXQ2aVK4vreLPpdrHqoZSHebPrJLk79lo'},
-    {who:'jack', title:'Check this site on your Duo', desc:'Folded, open and propped. Screenshot anything cramped.', chip:'Waiting on you · 2 min', icon:'half', doc:'1oyJS2uyoBF8-TET3fLxU-hvlke9U805GXNhFjMb4k8Q'},
-    {who:'claude', title:'First automatic ledger refresh', desc:'Sync runs 6:55 AM Nov 17. This page picks it up at 7:10 AM.', chip:'Waiting on Claude', icon:'activity', doc:'1-0NeNlO_XS-1eriou-Vb_-AhOkSfS-fiy6MThMTb_2s', hideWhenLedgerAfter:'2026-11-17T06:00:00-05:00'}
+    {who:'jack', title:'Sports Hub CBB model', desc:'Built on a review branch. Not merged without your OK.', chip:'Waiting on you · approve or park', icon:'basket', steps:['Tell Claude "ship the CBB model" to merge and publish it.','Or tell Claude "park CBB" and this item is removed.'], why:'Built and tested on a review branch on Nov 14. It was held back because publishing needs your explicit OK.', doc:'1Ayh9Sfaff1hXQ2aVK4vreLPpdrHqoZSHebPrJLk79lo'},
+    {who:'jack', title:'Check this site on your Duo', desc:'Folded, open and propped. Screenshot anything cramped.', chip:'Waiting on you · 2 min', icon:'half', steps:['Open this site with the Duo folded, then open.','Prop it half-folded and turn Mid-fold on.','Screenshot anything cramped or cut off and send it to Claude.','If it all looks right, tell Claude "HQ looks good on the Duo".'], why:'It has only been tested in a desktop browser at Duo sizes.', doc:'1oyJS2uyoBF8-TET3fLxU-hvlke9U805GXNhFjMb4k8Q'},
+    {who:'claude', title:'First automatic ledger refresh', desc:'Sync runs 6:55 AM Nov 17. This page picks it up at 7:10 AM.', chip:'Waiting on Claude', icon:'activity', steps:[], why:'Nothing for you to do. This item clears itself once the first automatic refresh lands.', doc:'1-0NeNlO_XS-1eriou-Vb_-AhOkSfS-fiy6MThMTb_2s', hideWhenLedgerAfter:'2026-11-17T06:00:00-05:00'}
+  ],
+
+  // What-to-do notes for blockers that arrive from the ledger, matched by a word in the blocker text
+  howto: [
+    {match:'draftkings', steps:['The blocked refresh is a ChatGPT task, so the reconnect happens in ChatGPT.','In your Operations HQ chat, say "reconnect DraftKings" and sign in when it asks.','It clears here after the next ledger refresh shows it fixed.'], doc:'1Ayh9Sfaff1hXQ2aVK4vreLPpdrHqoZSHebPrJLk79lo'},
+    {match:'jarvis', steps:[], why:'Nothing for you to do. Claude checks the first channel post after the 8:45 AM relay.'}
   ],
 
   // ChatGPT scheduled tasks (its own Nov 16 inventory). days: Mon..Sun
