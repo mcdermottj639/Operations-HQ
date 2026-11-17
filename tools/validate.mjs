@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 const fail = []; const ctx = { window: {} }; vm.createContext(ctx);
-for (const f of ['data.js', 'ledger.js']) {
+for (const f of ['data.js', 'ledger.js', 'checks.js']) {
   const src = fs.readFileSync(f, 'utf8');
   try { vm.runInContext(src, ctx, { filename: f }); } catch (e) { fail.push(`${f}: does not parse: ${e.message}`); continue; }
   // strip Google Doc ids (long id-like tokens) before scanning for numbers
@@ -25,5 +25,9 @@ else {
   if (n < 8) fail.push(`ledger.js: only ${n} tasks (need 8+)`);
   for (const b of L.blockers || []) if (!['jack', 'claude', 'chatgpt', 'third'].includes(b.who) || !b.text) fail.push(`ledger.js: bad blocker ${JSON.stringify(b)}`);
 }
+const K = ctx.window.HQ_CHECKS;
+if (!K || typeof K.items !== 'object') fail.push('checks.js: HQ_CHECKS missing');
+else for (const [k, v] of Object.entries(K.items)) if (!['resolved', 'open'].includes(v.state)) fail.push(`checks.js: bad state for ${k}`);
+for (const n of (D && D.needs) || []) if (n.who === 'jack' && !n.key) fail.push(`data.js: item "${n.title}" waiting on Jack has no key`);
 if (fail.length) { console.error('VALIDATION FAILED\n' + fail.join('\n')); process.exit(1); }
 console.log('validate: OK');

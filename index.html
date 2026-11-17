@@ -153,6 +153,10 @@ details.more{border-top:1px solid var(--line);margin-top:10px}details.more>summa
 details.group{border-top:1px solid var(--line);scroll-margin-top:calc(var(--topbar) + var(--sat) + 8px)}#task-list{scroll-margin-top:calc(var(--topbar) + var(--sat) + 60px)}details.group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:52px}details.group>summary::-webkit-details-marker{display:none}.g-name{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:15px;flex:0 0 42%;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.g-bar{flex:1;min-width:0}.g-bar .hbar{height:8px}.g-n{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;flex:none;min-width:34px;text-align:right}.g-body{padding-bottom:8px}
 .trow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px dashed var(--line)}.sdot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}.trow-copy{flex:1;min-width:0}.trow-name{font-size:14px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trow-cad{font-size:12px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trow-last{font-size:12px;font-weight:650;color:var(--muted);white-space:nowrap;flex:none;text-align:right}.trow-last.norec{color:var(--warn)}.trow-last.fail{color:var(--bad)}
 .row-title.wrap{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.3}
+.row.split{padding:0;gap:4px}.row-main{display:flex;align-items:center;gap:12px;flex:1;min-width:0;padding:11px 0;min-height:56px}.row-main:hover .row-title{color:var(--accent)}
+.row-meta .pill{max-width:100%;overflow:hidden;text-overflow:ellipsis;display:inline-block}
+.chk{width:44px;height:44px;border-radius:50%;border:2px solid var(--soft);display:grid;place-items:center;flex:none;color:var(--line);margin-left:4px;transition:border-color .15s,color .15s}.chk .icon{width:20px;height:20px;stroke-width:2.6}.chk:hover,.chk:focus-visible{border-color:var(--accent);color:var(--accent)}
+.undo{font-size:13px;font-weight:700;color:var(--accent);min-height:40px;padding:0 6px;flex:none}
 .steps-list{margin:0;padding-left:22px;font-size:15px;line-height:1.5;display:grid;gap:8px}.steps-list li::marker{color:var(--accent);font-weight:700}
 .quiet{color:var(--muted);font-size:14px;padding:6px 0}
 .event-node.new{background:var(--soft)}
@@ -172,6 +176,7 @@ details.group{border-top:1px solid var(--line);scroll-margin-top:calc(var(--topb
 <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></symbol>
 <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
 <symbol id="i-half" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M4 11h16"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
 <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
 <symbol id="i-link" viewBox="0 0 24 24"><path d="M13 5h6v6m0-6-9 9"/><path d="M19 13v6H5V5h6"/></symbol>
 <symbol id="i-alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2L12 3Z"/><path d="M12 9v5m0 3v.1"/></symbol>
@@ -227,6 +232,7 @@ details.group{border-top:1px solid var(--line);scroll-margin-top:calc(var(--topb
    <section class="panel"><div class="panel-pad">
     <div class="panel-head"><h2>Needs you</h2><span class="pill amber" id="needs-count"></span></div>
     <div id="needs-jack"></div>
+    <div id="needs-done"></div>
    </div></section>
    <section class="panel"><div class="panel-pad">
     <div class="panel-head"><h2>In motion</h2><span class="pill gray">Not on you</span></div>
@@ -361,6 +367,7 @@ const VIEWS={overview:'Overview',projects:'Projects',automations:'Tasks',decisio
 const ST={ok:'Ran OK',norec:'No status recorded',new:'First run pending',fail:'Failed'};
 const ORDER=['ok','norec','new','fail'];
 let filter='all',search='',lastFocus=null,L=null,ledgerAt=0;
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pill=p=>`<span class="pill ${p.badge}">${esc(p.status)}</span>`;
 const prow=(p,cls)=>`<button class="${cls}" data-open="${p.id}" aria-label="Open ${esc(p.name)} details"><div class="glyph ${p.style}">${I(p.icon)}</div><div class="row-copy"><div class="row-line"><div class="row-title">${esc(p.name)}</div>${pill(p)}</div><div class="row-desc">${esc(p.summary)}</div></div><div class="row-end">${I('chev')}</div></button>`;
@@ -374,18 +381,40 @@ function allNeeds(){
  const out=[];
  if(L){
   L.areas.forEach(a=>a.tasks.filter(t=>t.s==='fail').forEach(t=>out.push({who:'claude',title:'Task failed: '+t.n,desc:'Last run '+t.l+'.',chip:'Waiting on Claude',icon:'alert',steps:[],why:'Nothing for you to do. Claude is told when a task fails.'})));
-  (L.blockers||[]).forEach(b=>{const i=b.text.indexOf(':'),sp=i>0&&i<90;const title=sp?b.text.slice(0,i):b.text,desc=sp?b.text.slice(i+1).trim().replace(/^./,ch=>ch.toUpperCase()):'';out.push({who:b.who,title,desc,chip:WHO[b.who][0]+(b.hint&&b.who==='jack'?' · '+b.hint:''),icon:'alert',wrap:true,full:b.text,doc:'1-0NeNlO_XS-1eriou-Vb_-AhOkSfS-fiy6MThMTb_2s',...((H.howto||[]).find(h=>b.text.toLowerCase().includes(h.match))||{})})});
+  (L.blockers||[]).forEach(b=>{const i=b.text.indexOf(':'),sp=i>0&&i<90;const title=sp?b.text.slice(0,i):b.text,desc=sp?b.text.slice(i+1).trim().replace(/^./,ch=>ch.toUpperCase()):'';out.push({key:'blk-'+b.text.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,48),src:'ledger',who:b.who,title,desc,chip:WHO[b.who][0]+(b.hint&&b.who==='jack'?' · '+b.hint:''),icon:'alert',wrap:true,full:b.text,doc:'1-0NeNlO_XS-1eriou-Vb_-AhOkSfS-fiy6MThMTb_2s',...((H.howto||[]).find(h=>b.text.toLowerCase().includes(h.match))||{})})});
  }
  (H.needs||[]).forEach(n=>{if(n.hideWhenLedgerAfter&&L&&Date.parse(L.asOfISO)>Date.parse(n.hideWhenLedgerAfter))return;out.push(n)});
  return out;
 }
 let NEEDS=[];
-const nrow=n=>{const w=WHO[n.who]||WHO.third;return `<button class="row" data-need="${NEEDS.indexOf(n)}" aria-label="${esc(n.title)}: what to do"><div class="glyph ${n.who==='jack'?'orange':''}">${I(n.icon||'alert')}</div><div class="row-copy"><div class="row-title${n.wrap?' wrap':''}">${esc(n.title)}</div>${n.desc?`<div class="row-desc">${esc(n.desc)}</div>`:''}<div class="row-meta"><span class="pill ${w[1]}">${esc(n.chip||w[0])}</span></div></div><div class="row-end">${I('chev')}</div></button>`};
+const nrow=n=>{const w=WHO[n.who]||WHO.third,i=NEEDS.indexOf(n),can=n.who==='jack'&&n.key;const chip=n.rep?`<span class="pill bad">Still open · ${esc((fmtAsOf(new Date(n.rep).toISOString())||'').replace(' ET',''))}</span>`:`<span class="pill ${w[1]}">${esc(n.chip||w[0])}</span>`;return `<div class="row split"><button class="row-main" data-need="${i}" aria-label="${esc(n.title)}: what to do"><div class="glyph ${n.who==='jack'?'orange':''}">${I(n.icon||'alert')}</div><div class="row-copy"><div class="row-title${n.wrap?' wrap':''}">${esc(n.title)}</div>${n.desc?`<div class="row-desc">${esc(n.desc)}</div>`:''}<div class="row-meta">${chip}</div></div></button>${can?`<button class="chk" data-check="${i}" aria-label="Mark done: ${esc(n.title)}">${I('check')}</button>`:`<span class="row-end">${I('chev')}</span>`}</div>`};
+// check-offs live on this device. A check is a claim: the next update verifies it, then the item is removed or comes back.
+const getChecks=()=>{try{return JSON.parse(store.get('ohq-checks')||'{}')||{}}catch(e){return {}}},setChecks=c=>store.set('ohq-checks',JSON.stringify(c));
+function nextUpdate(){const p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date()),m=(+p.find(x=>x.type==='hour').value%24)*60+ +p.find(x=>x.type==='minute').value;return m<430||m>=1270?'7:10 AM':'9:10 PM'}
+let justChecked=false;
+function sortNeeds(all){
+ const S=(window.HQ_CHECKS&&window.HQ_CHECKS.items)||{},sAt=Date.parse((window.HQ_CHECKS&&window.HQ_CHECKS.verifiedAtISO)||0)||0,lAt=L?Date.parse(L.asOfISO):0;
+ const C=getChecks(),mine=[],other=[],waiting=[],seen={};
+ for(const n of all){
+  if(n.who!=='jack'){other.push(n);continue}
+  if(n.key)seen[n.key]=1;
+  const sv=S[n.key];if(sv&&sv.state==='resolved'){delete C[n.key];continue}
+  const c=C[n.key];
+  if(!c){mine.push(n);continue}
+  if(c.rep){n.rep=c.rep;n.repNote=sv&&sv.note;mine.push(n);continue}
+  if(n.verify==='ack'){n.ack=true;waiting.push(n);continue}
+  const vAt=n.src==='ledger'?lAt:sAt;
+  if(vAt>(c.seen||0)){C[n.key]={rep:vAt};n.rep=vAt;n.repNote=sv&&sv.note;mine.push(n)}else waiting.push(n);
+ }
+ if(L)for(const k of Object.keys(C))if(!seen[k])delete C[k];
+ setChecks(C);return {mine,other,waiting};
+}
 
 function renderStatus(){
- const needs=NEEDS=allNeeds(),mine=needs.filter(n=>n.who==='jack'),other=needs.filter(n=>n.who!=='jack');
- $('#needs-jack').innerHTML=mine.length?mine.map(nrow).join(''):'<div class="quiet">Nothing is waiting on you.</div>';
+ NEEDS=allNeeds();const {mine,other,waiting}=sortNeeds(NEEDS);
+ $('#needs-jack').innerHTML=mine.length?mine.map(nrow).join(''):`<div class="quiet">${waiting.length?'All checked off.':'Nothing is waiting on you.'}</div>`;
  $('#needs-count').textContent=mine.length+' open';$('#needs-count').className='pill '+(mine.length?'amber':'teal');
+ $('#needs-done').innerHTML=waiting.length?`<details class="more"${justChecked?' open':''}><summary>Checked off (${waiting.length})</summary><div class="fold" style="padding-bottom:4px">${waiting.map(n=>`<div class="trow"><i class="sdot ${n.ack?'ok':'new'}"></i><div class="trow-copy"><div class="trow-name">${esc(n.title)}</div><div class="trow-cad">${n.ack?'Done on your word':'Verifying at the '+nextUpdate()+' update'}</div></div><button class="undo" data-uncheck="${esc(n.key)}">Undo</button></div>`).join('')}</div></details>`:'';
  $('#needs-other').innerHTML=other.length?other.map(nrow).join(''):'<div class="quiet">Nothing open.</div>';
  const gN=H.chatgpt.length;
  if(!L){
@@ -424,18 +453,17 @@ function renderStatic(){$('#milestones').innerHTML=H.milestones.map(m=>`<div cla
 function show(v,push){if(!VIEWS[v])return;$$('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));$$('[data-view]').forEach(b=>{if(b.classList.contains('nav-item')||b.classList.contains('tab'))b.setAttribute('aria-current',b.dataset.view===v?'page':'false')});$('#crumb').textContent=VIEWS[v];document.title=VIEWS[v]+' · Operations HQ';const a=$('.view.active');if(a)a.scrollTop=0;window.scrollTo(0,0);if(push!==false){try{history.replaceState(null,'','#'+v)}catch(e){}}}
 function openDetail(id,from){const p=projects.find(p=>p.id===id);if(!p)return;sheet('Handoff summary · '+(H.projectsAsOf||''),`<div class="glyph ${p.style}">${I(p.icon)}</div><h2>${esc(p.name)}</h2>${pill(p)}<p class="sub" style="margin:12px 0 18px;font-size:15px">${esc(p.summary)}</p><div class="block"><div class="block-label">Verified</div><div class="block-body">${esc(p.verified)}</div></div><div class="block"><div class="block-label">Next</div><div class="block-body">${esc(p.next)}</div></div><div class="block"><div class="block-label">Freshness</div><div class="block-body" style="color:var(--muted)">Handoff audit Nov 16, 2026. Not polled live.</div></div><div class="detail-actions"><a class="button primary" href="${doc(p.doc)}" rel="noopener noreferrer" target="_blank">Open handoff ${I('link','sm')}</a><button class="button" data-detail-close>Close</button></div>`,from)}
 function sheet(label,html,from){lastFocus=from||document.activeElement;$('#detail-label').textContent=label;$('#detail-content').innerHTML=html;const d=$('#detail');d.inert=false;d.classList.add('show');d.scrollTop=0;$('#backdrop').classList.add('show');$('#detail-close').focus()}
-function openNeed(i,from){const n=NEEDS[i];if(!n)return;const w=WHO[n.who]||WHO.third,mine=n.who==='jack',steps=n.steps||[];sheet(mine?'Needs you':'In motion',`<div class="glyph ${mine?'orange':''}">${I(n.icon||'alert')}</div><h2>${esc(n.title)}</h2><span class="pill ${w[1]}">${esc(n.chip||w[0])}</span><div class="block" style="margin-top:16px"><div class="block-label">${mine?'What to do':'Your part'}</div>${steps.length?`<ol class="steps-list">${steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`:`<div class="block-body">${mine?'No steps recorded yet. Ask Claude what is needed.':'Nothing. '+esc(w[0])+'.'}</div>`}</div>${(n.why||n.full||n.desc)?`<div class="block"><div class="block-label">Why</div><div class="block-body" style="color:var(--muted)">${esc(n.why||n.full||n.desc)}</div></div>`:''}<div class="detail-actions">${n.doc?`<a class="button" href="${doc(n.doc)}" rel="noopener noreferrer" target="_blank">Source doc ${I('link','sm')}</a>`:''}<button class="button primary" data-detail-close>Done</button></div>`,from)}
+function openNeed(i,from){const n=NEEDS[i];if(!n)return;const w=WHO[n.who]||WHO.third,mine=n.who==='jack',steps=n.steps||[];sheet(mine?'Needs you':'In motion',`<div class="glyph ${mine?'orange':''}">${I(n.icon||'alert')}</div><h2>${esc(n.title)}</h2><span class="pill ${w[1]}">${esc(n.chip||w[0])}</span><div class="block" style="margin-top:16px"><div class="block-label">${mine?'What to do':'Your part'}</div>${steps.length?`<ol class="steps-list">${steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`:`<div class="block-body">${mine?'No steps recorded yet. Ask Claude what is needed.':'Nothing. '+esc(w[0])+'.'}</div>`}</div>${(n.why||n.full||n.desc)?`<div class="block"><div class="block-label">Why</div><div class="block-body" style="color:var(--muted)">${esc(n.why||n.full||n.desc)}</div></div>`:''}${n.rep?`<div class="block"><div class="block-label">Rechecked ${esc(fmtAsOf(new Date(n.rep).toISOString())||'')}</div><div class="block-body" style="color:var(--bad)">Still open${n.repNote?': '+esc(n.repNote):'.'}</div></div>`:''}${mine&&n.key?`<div class="block"><div class="block-body" style="color:var(--muted);font-size:13px">${n.verify==='ack'?'Only you can judge this one, so checking it off clears it.':'Checking it off hides it until the '+nextUpdate()+' update, which removes it if it is fixed or brings it back if not.'}</div></div>`:''}<div class="detail-actions">${mine&&n.key?`<button class="button primary" data-check="${i}">${I('check','sm')} I did this</button>`:''}${n.doc?`<a class="button" href="${doc(n.doc)}" rel="noopener noreferrer" target="_blank">Source doc ${I('link','sm')}</a>`:''}${mine&&n.key?'':'<button class="button primary" data-detail-close>Close</button>'}</div>`,from)}
 function closeDetail(){const d=$('#detail');if(!d.classList.contains('show'))return;d.classList.remove('show');$('#backdrop').classList.remove('show');d.inert=true;if(lastFocus&&document.contains(lastFocus))lastFocus.focus();lastFocus=null}
-document.addEventListener('click',e=>{const t=e.target;const ar=t.closest('[data-area]');if(ar){show('automations');const id=ar.dataset.area,g=id==='chatgpt'?$('#task-list'):$('#g-'+id);if(g){if(g.tagName==='DETAILS')g.open=true;g.scrollIntoView({block:'start'})}return}const nd=t.closest('[data-need]');if(nd){openNeed(+nd.dataset.need,nd);return}const nav=t.closest('[data-view]');if(nav){show(nav.dataset.view);return}const card=t.closest('[data-open]');if(card){openDetail(card.dataset.open,card);return}if(t.closest('[data-detail-close]')||t.closest('#detail-close')||t.closest('#backdrop')){closeDetail();return}const f=t.closest('[data-filter]');if(f){filter=f.dataset.filter;$$('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',b===f?'true':'false'));renderGrid()}});
+document.addEventListener('click',e=>{const t=e.target;const ar=t.closest('[data-area]');if(ar){show('automations');const id=ar.dataset.area,g=id==='chatgpt'?$('#task-list'):$('#g-'+id);if(g){if(g.tagName==='DETAILS')g.open=true;g.scrollIntoView({block:'start'})}return}const ck=t.closest('[data-check]');if(ck){const n=NEEDS[+ck.dataset.check];if(n&&n.key){const C=getChecks(),K=window.HQ_CHECKS;C[n.key]={at:Date.now(),seen:n.src==='ledger'?(L?Date.parse(L.asOfISO):0):(Date.parse((K&&K.verifiedAtISO)||0)||0)};setChecks(C);justChecked=true;lastFocus=null;closeDetail();renderStatus()}return}const un=t.closest('[data-uncheck]');if(un){const C=getChecks();delete C[un.dataset.uncheck];setChecks(C);justChecked=true;renderStatus();return}const nd=t.closest('[data-need]');if(nd){openNeed(+nd.dataset.need,nd);return}const nav=t.closest('[data-view]');if(nav){show(nav.dataset.view);return}const card=t.closest('[data-open]');if(card){openDetail(card.dataset.open,card);return}if(t.closest('[data-detail-close]')||t.closest('#detail-close')||t.closest('#backdrop')){closeDetail();return}const f=t.closest('[data-filter]');if(f){filter=f.dataset.filter;$$('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',b===f?'true':'false'));renderGrid()}});
 $('#project-search').addEventListener('input',e=>{search=e.target.value.toLowerCase().trim();renderGrid()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail()});
 window.addEventListener('hashchange',()=>show(location.hash.slice(1),false));
 
 // task status: loaded fresh on every open, and again when the app is reopened after 15+ minutes
-function loadLedger(){const s=document.createElement('script');s.src='ledger.js?t='+Date.now();s.onload=()=>{L=window.HQ_LEDGER||null;ledgerAt=Date.now();renderStatus();s.remove()};s.onerror=()=>{ledgerAt=Date.now();renderStatus();s.remove()};document.head.appendChild(s)}
+function loadLedger(){let left=2;const done=()=>{if(--left)return;L=window.HQ_LEDGER||null;ledgerAt=Date.now();renderStatus()};for(const f of ['ledger.js','checks.js']){const el=document.createElement('script');el.src=f+'?t='+Date.now();el.onload=el.onerror=()=>{el.remove();done()};document.head.appendChild(el)}}
 
 // theme (remembered per device)
-const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const root=document.documentElement;
 function setTheme(light){root.classList.toggle('light',light);const m=$('meta[name="theme-color"]');if(m)m.content=light?'#eef2f3':'#0e1217'}
 setTheme(store.get('ohq-theme')==='light');
