@@ -428,7 +428,8 @@ function renderStatus(){
  const ageH=(Date.now()-Date.parse(L.asOfISO))/36e5;
  $$('[data-asof]').forEach(e=>e.textContent='Updated '+asof);
  const top=$('#asof-top');if(top)top.textContent='Updated '+asof;const rail=$('#asof-rail');if(rail)rail.textContent='Task status updated '+asof+'. Read-only: nothing here trades, lists or runs a task.';
- $('#stale').innerHTML=ageH>26?`<div class="notice">${I('alert')}<div>Stale: no status refresh in ${Math.floor(ageH)} hours. Refreshes are due 7:10 AM and 9:10 PM ET.</div></div>`:'';
+ const etNow=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));const due=new Date(etNow);due.setHours(etNow.getHours()>=21?21:7,10,0,0);const etLast=new Date(new Date(L.asOfISO).toLocaleString('en-US',{timeZone:'America/New_York'}));const missedRefresh=etNow>=due&&etLast<due;
+ $('#stale').innerHTML=missedRefresh||ageH>26?`<div class="notice">${I('alert')}<div>${missedRefresh?'Scheduled status update missing: the latest published ledger predates the '+(due.getHours()===7?'7:10 AM':'9:10 PM')+' ET refresh.':'Stale: no status refresh in '+Math.floor(ageH)+' hours.'} Last recorded task snapshot: ${esc(asof)}. Do not treat the verification time on an individual item as proof that the full ledger refreshed.</div></div>`:'';
  const tile=(h,v,f,cls='')=>`<div class="stat"><div class="stat-head">${h}</div><div class="stat-val ${cls}">${v}</div><div class="stat-foot">${f}</div></div>`;
  $('#tiles').innerHTML=tile('Needs you',mine.length,'open',mine.length?'wait':'ok')+tile('Claude',tot,'tasks')+(c.fail?tile('Failed',c.fail,'last run','bad'):tile('Ran OK',c.ok,'of '+tot,'ok'))+tile('ChatGPT',gN,'tasks');
  $('#task-tiles').innerHTML=tile('Ran OK',c.ok,'of '+tot,'ok')+tile('No status',c.norec,'Check output',c.norec?'wait':'')+(c.fail?tile('Failed',c.fail,'Last run','bad'):tile('First run',c.new,'Pending'));
