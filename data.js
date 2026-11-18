@@ -40,13 +40,14 @@ window.HQ_DATA = {
 
   milestones: [
     {title:'Operations HQ site live', note:'Built by Claude · reviewed by ChatGPT'},
-    {title:'Claude task ledger created', note:'Refreshes 6:55 AM + 8:55 PM'},
+    {title:'Claude task ledger created', note:'Rewritten 6:55 AM + 6:55 PM daily; checked 5×/day'},
+    {title:'Portfolio v246 live', note:'Apex paper decision view · post-merge CI passed Nov 17'},
     {title:'Buy Radar: one writer', note:'Claude publishes · ChatGPT researches Tue/Fri'},
     {title:'Sports Hub Duo check accepted', note:'v389 · on your phone'}
   ],
 
   projects: [
-    {id:'portfolio',name:'Portfolio & Apex',icon:'chart',style:'lime',state:'inprogress',status:'Research active',badge:'blue',summary:'Apex paper validation and production safeguards remain separate.',verified:'Portfolio release validation pilot exists. v2.9 is a paper-only track; results not yet graded in this snapshot.',next:'Verify prospective paper cohorts and live task evidence without altering trade authorizations.',doc:'1tRDoWPVmd8HhEV7-rqPoqG1cYe7Yp9lAXAasEMos5xw'},
+    {id:'portfolio',name:'Portfolio & Apex',icon:'chart',style:'lime',state:'inprogress',status:'v246 live',badge:'blue',summary:'Apex paper validation and production safeguards remain separate.',verified:'v246 (paper decision view) passed post-merge CI incl. the published-site check. v2.9 is paper only; no graded cohorts yet. Physical Duo not checked.',next:'Verify prospective paper cohorts and live task evidence without altering trade authorizations.',doc:'1tRDoWPVmd8HhEV7-rqPoqG1cYe7Yp9lAXAasEMos5xw'},
     {id:'sports',name:'Sports Hub',icon:'basket',style:'teal',state:'verified',status:'CBB merged v390',badge:'teal',summary:'v389 device acceptance; v390 CBB merged. DraftKings refresh still blocked.',verified:'GitHub CI and Pages jobs passed; device acceptance recorded by Claude Nov 16. CBB model was merged into main in v390 on Nov 17 (commit 913cf4c). Live Pages verification remains separate.',next:'Restore DraftKings connector; independently verify v390 live deployment.',doc:'1Ayh9Sfaff1hXQ2aVK4vreLPpdrHqoZSHebPrJLk79lo'},
     {id:'ebay',name:'Card Vault / eBay',icon:'card',style:'orange',state:'inprogress',status:'Single owner',badge:'blue',summary:'Claude owns canonical Buy Radar publishing; ChatGPT researches.',verified:'ChatGPT Tue/Fri task set to research only and read back. Claude confirmed its Saturday task is the only Buy Radar publisher. Last published Card Vault UX reported as v72 in the handoff.',next:'Preserve separate comparison / owner event feeds.',doc:'1Qpg8aLmv-BR1tKX554_JXNegompKGVeRunsJsXxzNSo'},
     {id:'golf',name:'Caddie HQ',icon:'golf',style:'lime',state:'verified',status:'Web verified',badge:'teal',summary:'v293 public deployment and saved club data documented.',verified:'Handoff reports v293 public asset parity; physical device and real GPS remain separate tests.',next:'Continue source-backed course onboarding; do not guess mapping coverage.',doc:'10TzWts8Im5hGWAcYKpHSUhuiOwJYrUii2g2TLiZtShc'},
@@ -58,7 +59,7 @@ window.HQ_DATA = {
 
   sources: [
     ['Claudex coordination','Cross-assistant rules and OPS-IDs','1oyJS2uyoBF8-TET3fLxU-hvlke9U805GXNhFjMb4k8Q'],
-    ['Claude task ledger','Every Claude task, refreshed twice a day','1-0NeNlO_XS-1eriou-Vb_-AhOkSfS-fiy6MThMTb_2s'],
+    ['Claude task ledger','Every Claude task, rewritten twice a day','1-0NeNlO_XS-1eriou-Vb_-AhOkSfS-fiy6MThMTb_2s'],
     ['HQ operating home','Roadmap, authority, briefing format','1LdBhgSe5HLvNji-F6aWlMFwW6o8JM0peaXnR3Cp40q8'],
     ['Claude integration audit','Full task inventory, gaps, lifecycle','13ndXp8KyFfrsUJmiPSgQUsq-k6QiYY1951BmxS8iiUQ'],
     ['Portfolio handoff','Apex, Agentic and release gates','1tRDoWPVmd8HhEV7-rqPoqG1cYe7Yp9lAXAasEMos5xw'],

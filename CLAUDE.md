@@ -12,7 +12,7 @@ Read-only dashboard for Jack. ChatGPT (Operations Lead) owns content and design 
 - `tools/validate.mjs` — public-safety and shape gate. The publish workflow runs it; a failure blocks publishing.
 
 ## How status gets here (no one has to ask)
-1. Claude's Claudex sync rewrites the ledger doc at 6:55 AM and 8:55 PM ET.
+1. Claude's Claudex sync runs 5×/day (6:55 · 10:55 AM · 2:55 · 6:55 · 10:55 PM ET) with a cheap no-change preflight, and always rewrites the ledger doc at 6:55 AM and 6:55 PM ET (more often only when a repo, PR or OPS item changed) — OPS-20261117-01, Nov 17.
 2. The scheduled task "Operations HQ site refresh" (7:10 AM and 9:10 PM ET) reads that doc, runs `build-ledger.mjs` then `validate.mjs`, and pushes `ledger.js` to `main` only if it changed.
 3. The `Publish to gh-pages` workflow re-runs `validate.mjs` and copies `main` to `gh-pages`. GitHub Pages serves it.
 4. The page loads `ledger.js` fresh on every open (and again when reopened after 15 minutes), shows "Updated <time>", and shows a Stale notice after 26 hours without a refresh.
@@ -39,6 +39,7 @@ Read-only dashboard for Jack. ChatGPT (Operations Lead) owns content and design 
 - Confirm the `pages build and deployment` run succeeded, then load the live URL.
 
 ## Log
+- 2026-11-17 — data (Claude). Portfolio v246 milestone + project status; ledger cadence wording updated for the 5×/day Claudex sync (ledger rewritten 6:55 AM + 6:55 PM).
 - 2026-11-17 — v2.2 (Claude). Check-offs with verify-then-remove-or-repost (see the rule above). Added `checks.js`, `tools/resolve.mjs`, the verify step in the refresh task, and validator coverage for both.
 - 2026-11-17 — v2.1 (Claude). Jack: "why does clicking a needs you take me to google doc". Open items now open an in-page sheet with what to do, why and who it waits on; the source doc is a secondary button.
 - 2026-11-17 — v2 (Claude). Jack: "make sure what's most important to what we are doing is being shown not just gpt stuff", then "get the approved Claude task ledger feeding fresh, public-safe status into the dashboard". Overview now leads with Needs you, last-run health and What's running by area (23 Claude tasks + 5 ChatGPT), replacing the ChatGPT-only counts. Tasks page shows every Claude task by area with status dots; ChatGPT's schedule is one group. Data split out of the page into `ledger.js` (auto) and `data.js` (hand). Added the converter, the validator, the validate step in the publish workflow, the "Updated" time and Stale notice, and the twice-daily refresh task. Fixed ChatGPT's review finding OPS-SITE-QA-01 (mid-fold OFF now survives a reload). Browser-tested at all sizes plus simulated fold, failed-task, stale and missing-ledger cases. Physical iPhone Duo not verified.
