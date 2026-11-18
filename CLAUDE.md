@@ -21,7 +21,9 @@ Read-only dashboard for Jack. ChatGPT (Operations Lead) owns content and design 
 
 ## Rules
 - Public GitHub Pages site. Never add account numbers (not even last four), balances, dollar amounts, order/PR ids, tokens, buyer details, task prompts or private task output. `noindex` is set, but that is not privacy. `validate.mjs` enforces this; never weaken it to get a publish through.
-- Task rows carry only: name, cadence, last-fired date/time, and a status word (ok / norec / new / fail).
+- Task rows carry only: name, cadence, and three separate facts: `l` last fired, `s` recorded result (ok / norec / new / fail), `v` output verified (yes / no), plus an optional short failure reason `r`. Fired, succeeded and verified are never merged (Jack, Nov 18).
+- `ok` only when the ledger records SUCCEEDED for a run it actually read. A row the ledger did not re-read ("carried") or with no stored result is `norec`, shown as **Unknown**, never as success. A recorded FAILED stays `fail`, even when carried, until a later run is recorded as succeeded.
+- A stale ledger proves nothing about today: once the snapshot misses a refresh slot or is over 26 h old, the page shows every past `ok` as Unknown.
 - Lead with Jack's operation, not one assistant's: Needs you first, then task health, then what is running by area (Investing, Sports Hub, Card Vault, Caddie HQ, App health, Your updates), with ChatGPT's tasks as one more group.
 - Facts only, each traceable to a Claudex doc. Never show a task as run or succeeded without the ledger saying so.
 - No execution controls: nothing on the page trades, lists, starts or edits a task.
@@ -39,6 +41,7 @@ Read-only dashboard for Jack. ChatGPT (Operations Lead) owns content and design 
 - Confirm the `pages build and deployment` run succeeded, then load the live URL.
 
 ## Log
+- 2026-11-18 — v2.3 (Claude). False-success fix. `build-ledger.mjs` had refused every ledger since Nov 17 (Drive now exports the tables as plain `A | B` lines, not markdown pipes), so the site kept the Nov 16 snapshot and showed the Agentic executor as OK after it failed Nov 17. Converter now reads both table formats and AM/PM times, skips one-shots, and emits fired / result / verified separately; carried rows are Unknown, carried failures stay failed. Page shows the three facts per task, renames "No status recorded" to Unknown, demotes OK to Unknown when the ledger is stale, and no longer raises a false "update missing" notice (it compared the 6:55 ledger with the 7:10 refresh time). Tested 320 / 390 / 466 / 960: no overflow.
 - 2026-11-17 — data (Claude). Portfolio v246 milestone + project status; ledger cadence wording updated for the 5×/day Claudex sync (ledger rewritten 6:55 AM + 6:55 PM).
 - 2026-11-17 — v2.2 (Claude). Check-offs with verify-then-remove-or-repost (see the rule above). Added `checks.js`, `tools/resolve.mjs`, the verify step in the refresh task, and validator coverage for both.
 - 2026-11-17 — v2.1 (Claude). Jack: "why does clicking a needs you take me to google doc". Open items now open an in-page sheet with what to do, why and who it waits on; the source doc is a secondary button.

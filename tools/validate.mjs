@@ -21,7 +21,7 @@ if (!D || !Array.isArray(D.projects) || !D.projects.length) fail.push('data.js: 
 if (!L) fail.push('ledger.js: HQ_LEDGER missing');
 else {
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00-0[45]:00$/.test(L.asOfISO || '') || isNaN(Date.parse(L.asOfISO))) fail.push('ledger.js: bad asOfISO');
-  let n = 0; for (const a of L.areas || []) for (const t of a.tasks || []) { n++; if (!t.n || !t.c || !t.l || !['ok', 'norec', 'new', 'fail'].includes(t.s)) fail.push(`ledger.js: bad task row ${JSON.stringify(t)}`); }
+  let n = 0; for (const a of L.areas || []) for (const t of a.tasks || []) { n++; if (!t.n || !t.c || !t.l || !['ok', 'norec', 'new', 'fail'].includes(t.s)) fail.push(`ledger.js: bad task row ${JSON.stringify(t)}`); if (t.v !== undefined && !['yes', 'no'].includes(t.v)) fail.push(`ledger.js: bad verified flag ${JSON.stringify(t)}`); }
   if (n < 8) fail.push(`ledger.js: only ${n} tasks (need 8+)`);
   for (const b of L.blockers || []) if (!['jack', 'claude', 'chatgpt', 'third'].includes(b.who) || !b.text) fail.push(`ledger.js: bad blocker ${JSON.stringify(b)}`);
 }

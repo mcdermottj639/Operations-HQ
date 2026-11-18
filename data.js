@@ -3,7 +3,7 @@
    PUBLIC PAGE: no account numbers (not even last four), balances, order or PR ids,
    buyer details, task prompts or private task output. Names, cadence, last-fired
    date and a status word only. Every fact must trace to a Claudex doc.
-   status: ok = scheduler recorded success · norec = fired, no status stored ·
+   status: ok = scheduler recorded success · norec = Unknown (no result read or stored) · fail = last recorded result failed ·
            new = has not run yet · sched = scheduled, run status not visible here */
 window.HQ_DATA = {
   projectsAsOf: 'Nov 17 (CBB source correction; task ledger pending morning refresh)',
