@@ -229,11 +229,11 @@ window.HQ_LEDGER = {
   }
  ],
  "paused": [
-  "7 one-shot or personal reminders left out. Every",
-  "none carried. Repo main SHAs were re-read this r",
-  "READBACK); portfolio-dashboard main was also rea",
-  "so NO pull request state was verified: PRs are \"",
-  "never called open"
+  "Claude OS AI capability scout",
+  "Claude OS Morning brief",
+  "Sports-Hub monthly improvement brainstorm",
+  "Briefing (SCHEDULER",
+  "read)"
  ],
  "blockers": [
   {
