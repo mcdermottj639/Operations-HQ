@@ -232,8 +232,7 @@ window.HQ_LEDGER = {
   "Claude OS AI capability scout",
   "Claude OS Morning brief",
   "Sports-Hub monthly improvement brainstorm",
-  "Briefing (SCHEDULER",
-  "read)"
+  "Briefing"
  ],
  "blockers": [
   {

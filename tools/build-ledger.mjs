@@ -89,7 +89,7 @@ for (const r of taskRows) {
   areas[id].tasks.push(row);
 }
 const pm = text.match(/^[ \t]*\**Paused(?: or disabled)?:\**[ \t]*(.+)$/im); // the line that starts with it, not a mention inside another sentence
-if (pm) for (const p of clean(pm[1]).split(/\.\s+Not in the scheduler read/i)[0].replace(/\.$/, '').split(/,\s*/)) { const n = niceName(p); if (n && !paused.includes(n)) paused.push(n.slice(0, 48)); }
+if (pm) for (const p of clean(pm[1]).split(/\.\s+Not in the scheduler read/i)[0].replace(/\s*\([^)]*\)/g, '').replace(/\.$/, '').split(/,\s*/)) { const n = niceName(p); if (n && !paused.includes(n)) paused.push(n.slice(0, 48)); }
 
 const blockers = [];
 if (blkHdr) {
