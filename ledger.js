@@ -27,28 +27,28 @@ window.HQ_LEDGER = {
      "c": "Weekdays 7:12 AM",
      "l": "Nov 18 7:12 AM",
      "s": "norec",
-     "v": "yes"
+     "v": "no"
     },
     {
      "n": "Apex buy sheet",
      "c": "Weekdays 8:05 AM",
      "l": "Nov 18 8:05 AM",
      "s": "norec",
-     "v": "yes"
+     "v": "no"
     },
     {
      "n": "Market update",
      "c": "Weekdays 8:10 AM",
      "l": "Nov 18 8:10 AM",
      "s": "norec",
-     "v": "yes"
+     "v": "no"
     },
     {
      "n": "Portfolio dashboard refresh",
      "c": "Weekdays hourly 8:35 AM–4:35 PM",
      "l": "Nov 18 4:35 PM",
      "s": "ok",
-     "v": "yes"
+     "v": "no"
     },
     {
      "n": "Agentic executor",
@@ -76,7 +76,7 @@ window.HQ_LEDGER = {
      "c": "Nightly 9:35 PM",
      "l": "Nov 18 9:35 PM",
      "s": "ok",
-     "v": "yes"
+     "v": "no"
     },
     {
      "n": "Game day",
@@ -104,7 +104,7 @@ window.HQ_LEDGER = {
      "c": "12:43 PM + 8:43 PM",
      "l": "Nov 18 8:43 PM",
      "s": "ok",
-     "v": "yes"
+     "v": "no"
     },
     {
      "n": "eBay bookkeeper",
@@ -132,7 +132,7 @@ window.HQ_LEDGER = {
      "c": "Mon/Wed/Fri 5:10 AM",
      "l": "Nov 18 5:10 AM",
      "s": "ok",
-     "v": "yes"
+     "v": "no"
     }
    ]
   },
@@ -146,14 +146,14 @@ window.HQ_LEDGER = {
      "c": "3:23 AM, Nov 17–30",
      "l": "Nov 19 3:23 AM",
      "s": "ok",
-     "v": "yes"
+     "v": "no"
     },
     {
      "n": "Operations HQ site refresh",
      "c": "7:10 AM + 9:10 PM",
      "l": "Nov 18 9:10 PM",
      "s": "ok",
-     "v": "yes"
+     "v": "no"
     },
     {
      "n": "Check",
@@ -174,7 +174,7 @@ window.HQ_LEDGER = {
      "c": "6:55 AM, 10:55 AM, 2:55 PM, 6:55 PM, 10:55 PM",
      "l": "Nov 19 6:55 AM",
      "s": "norec",
-     "v": "yes"
+     "v": "no"
     },
     {
      "n": "Claudex compaction",
@@ -229,7 +229,6 @@ window.HQ_LEDGER = {
   }
  ],
  "paused": [
-  "or disabled",
   "7 one-shot or personal reminders left out. Every",
   "none carried. Repo main SHAs were re-read this r",
   "READBACK); portfolio-dashboard main was also rea",

@@ -81,14 +81,15 @@ for (const r of taskRows) {
   if (s === 'new') { const m = blk.match(/first run ([A-Z][a-z]{2} \d{1,2})/i); l = m ? 'First run ' + m[1] : 'Not yet'; }
   else l = (notFired || /^carried/i.test(lastRaw)) ? 'Unknown' : lastRaw.replace(/\s*\([^)]*\)?/g, '').trim().slice(0, 24);
   const vRaw = iV >= 0 ? clean(r[iV]) : '';
-  const v = vRaw && !/^(—|-|none)$/i.test(vRaw) ? 'yes' : 'no';
+  // Verified only when the ledger cites checkable evidence (READBACK) and does not say it was not checked.
+  const v = /READBACK/i.test(vRaw) && !/not (re-?)?(checked|verified)|nothing can confirm/i.test(vRaw.replace(/state not verified/gi, '')) ? 'yes' : 'no';
   const rm = failed && clean(r[iS]).match(/(?:FAILED|ERROR)[,:]?\s*([a-z][a-z ]{3,38})/);
   const row = { n: n.slice(0, 48), c: cap(scrub(r[iC])).slice(0, 48), l, s, v };
   if (rm) row.r = scrub(rm[1]).slice(0, 40);
   areas[id].tasks.push(row);
 }
-const pm = text.match(/Paused:?\**\s*(.+)/i);
-if (pm) for (const p of clean(pm[1]).replace(/\.$/, '').split(/,\s*/)) { const n = niceName(p); if (n && !paused.includes(n)) paused.push(n.slice(0, 48)); }
+const pm = text.match(/Paused(?: or disabled)?:?\**\s*(.+)/i);
+if (pm) for (const p of clean(pm[1]).split(/\.\s+Not in the scheduler read/i)[0].replace(/\.$/, '').split(/,\s*/)) { const n = niceName(p); if (n && !paused.includes(n)) paused.push(n.slice(0, 48)); }
 
 const blockers = [];
 if (blkHdr) {
