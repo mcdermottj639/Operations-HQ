@@ -32,7 +32,10 @@ for (const r of rows) {
   if (low.includes('task') && low.some(c => c.startsWith('cadence'))) { tasksHdr = low; mode = 'tasks'; continue; }
   if (low[0] === 'blocker' && low.some(c => c.startsWith('waiting'))) { blkHdr = low; mode = 'blk'; continue; }
   if (low[0] === 'assignment') { mode = null; continue; }
+  // A task row that is short or long by a cell (the writer merged or split a column) is never dropped:
+  // keep task, cadence, enabled, last fired and result; verified and blocker become empty (not verified).
   if (mode === 'tasks' && r.length === tasksHdr.length) taskRows.push(r);
+  else if (mode === 'tasks' && r.length >= 5 && r.length <= tasksHdr.length + 2) { const k = r.slice(0, 5); while (k.length < tasksHdr.length) k.push(''); taskRows.push(k); }
   else if (mode === 'blk' && r.length === blkHdr.length) blkRows.push(r);
 }
 if (!tasksHdr || taskRows.length < 8) { console.error(`REFUSED: found ${taskRows.length} task rows (need 8+). Ledger text incomplete or format changed.`); process.exit(1); }

@@ -51,6 +51,13 @@ window.HQ_LEDGER = {
      "v": "yes"
     },
     {
+     "n": "Agentic executor",
+     "c": "Weekdays hourly 10:20 AM–4:20 PM",
+     "l": "Nov 18 2:20 PM",
+     "s": "ok",
+     "v": "no"
+    },
+    {
      "n": "Agentic weekly research refresh",
      "c": "Wed 2:02 AM",
      "l": "Nov 18 2:02 AM",

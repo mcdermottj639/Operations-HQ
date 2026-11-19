@@ -41,6 +41,7 @@ Read-only dashboard for Jack. ChatGPT (Operations Lead) owns content and design 
 - Confirm the `pages build and deployment` run succeeded, then load the live URL.
 
 ## Log
+- 2026-11-18 — v2.3.1 (Claude). Converter dropped any task row whose cell count differed from the header (the Agentic executor row vanished from the 6:57 PM ledger). Such rows are now kept with verified = no.
 - 2026-11-18 — v2.3 (Claude). False-success fix. `build-ledger.mjs` had refused every ledger since Nov 17 (Drive now exports the tables as plain `A | B` lines, not markdown pipes), so the site kept the Nov 16 snapshot and showed the Agentic executor as OK after it failed Nov 17. Converter now reads both table formats and AM/PM times, skips one-shots, and emits fired / result / verified separately; carried rows are Unknown, carried failures stay failed. Page shows the three facts per task, renames "No status recorded" to Unknown, demotes OK to Unknown when the ledger is stale, and no longer raises a false "update missing" notice (it compared the 6:55 ledger with the 7:10 refresh time). Tested 320 / 390 / 466 / 960: no overflow.
 - 2026-11-17 — data (Claude). Portfolio v246 milestone + project status; ledger cadence wording updated for the 5×/day Claudex sync (ledger rewritten 6:55 AM + 6:55 PM).
 - 2026-11-17 — v2.2 (Claude). Check-offs with verify-then-remove-or-repost (see the rule above). Added `checks.js`, `tools/resolve.mjs`, the verify step in the refresh task, and validator coverage for both.
