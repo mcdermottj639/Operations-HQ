@@ -4,6 +4,7 @@ Read-only dashboard for Jack. ChatGPT (Operations Lead) owns content and design 
 
 ## Files
 - `index.html` — the page (layout, styles, rendering). No data in it.
+- `freshness.js` — when a snapshot is too old to count. `node --test tools/freshness.test.mjs`.
 - `ledger.js` — AUTO-GENERATED task status (`window.HQ_LEDGER`). Never edit by hand.
 - `data.js` — hand-kept: open items not in the ledger, ChatGPT's task list, milestones, projects, sources.
 - `tools/build-ledger.mjs` — turns the text of the Claudex doc "Operations HQ — Claude task ledger" into `ledger.js`. All scrubbing happens in this code, not by judgment.
@@ -23,7 +24,8 @@ Read-only dashboard for Jack. ChatGPT (Operations Lead) owns content and design 
 - Public GitHub Pages site. Never add account numbers (not even last four), balances, dollar amounts, order/PR ids, tokens, buyer details, task prompts or private task output. `noindex` is set, but that is not privacy. `validate.mjs` enforces this; never weaken it to get a publish through.
 - Task rows carry only: name, cadence, and three separate facts: `l` last fired, `s` recorded result (ok / norec / new / fail), `v` output verified (yes / no), plus an optional short failure reason `r`. Fired, succeeded and verified are never merged (Jack, Nov 18).
 - `ok` only when the ledger records SUCCEEDED for a run it actually read. A row the ledger did not re-read ("carried") or with no stored result is `norec`, shown as **Unknown**, never as success. A recorded FAILED stays `fail`, even when carried, until a later run is recorded as succeeded.
-- A stale ledger proves nothing about today: once the snapshot misses a refresh slot or is over 26 h old, the page shows every past `ok` as Unknown.
+- A stale ledger proves nothing about today. `freshness.js` decides. Once the clock is past 7:10 AM or 9:10 PM ET, the snapshot must already contain that slot's sync (6:55 AM or 6:55 PM). The 6:55 PM ledger is enough for the 9:10 PM publish. On a weekday, after a market task's first fire, an OK recorded before that fire is shown as Unknown; an OK recorded after the fire still stands. Over 26 hours with no refresh, every past OK is Unknown.
+- The sync task still rewrites the ledger in full only at 6:55 AM and 6:55 PM until its owning chat applies `SYNC.md`. The page does not pretend a morning snapshot covers today's market runs.
 - Lead with Jack's operation, not one assistant's: Needs you first, then task health, then what is running by area (Investing, Sports Hub, Card Vault, Caddie HQ, App health, Your updates), with ChatGPT's tasks as one more group.
 - Facts only, each traceable to a Claudex doc. Never show a task as run or succeeded without the ledger saying so.
 - No execution controls: nothing on the page trades, lists, starts or edits a task.
@@ -41,6 +43,7 @@ Read-only dashboard for Jack. ChatGPT (Operations Lead) owns content and design 
 - Confirm the `pages build and deployment` run succeeded, then load the live URL.
 
 ## Log
+- 2026-11-23 — v2.4 (Grok). Market-hours honesty. A weekday OK from before today's first fire shows as Unknown, with a notice that names the snapshot time. The 9:10 PM check no longer treats a 6:55 PM ledger as missing. Rules live in `freshness.js` (`node --test tools/freshness.test.mjs`, 9/9). Schedules and the ledger doc were not changed. The owning Claude chat still has to apply `SYNC.md`.
 - 2026-11-19 — v2.3.2 (Claude). "Output verified" was shown for any text in the ledger's evidence cell, including "Not re-checked this run". It now needs READBACK evidence and no not-checked wording. Paused list reads the "Paused or disabled:" line cleanly.
 - 2026-11-18 — v2.3.1 (Claude). Converter dropped any task row whose cell count differed from the header (the Agentic executor row vanished from the 6:57 PM ledger). Such rows are now kept with verified = no.
 - 2026-11-18 — v2.3 (Claude). False-success fix. `build-ledger.mjs` had refused every ledger since Nov 17 (Drive now exports the tables as plain `A | B` lines, not markdown pipes), so the site kept the Nov 16 snapshot and showed the Agentic executor as OK after it failed Nov 17. Converter now reads both table formats and AM/PM times, skips one-shots, and emits fired / result / verified separately; carried rows are Unknown, carried failures stay failed. Page shows the three facts per task, renames "No status recorded" to Unknown, demotes OK to Unknown when the ledger is stale, and no longer raises a false "update missing" notice (it compared the 6:55 ledger with the 7:10 refresh time). Tested 320 / 390 / 466 / 960: no overflow.

@@ -357,6 +357,7 @@ details.group{border-top:1px solid var(--line);scroll-margin-top:calc(var(--topb
 </aside>
 
 <script src="data.js?v=3"></script>
+<script src="freshness.js?v=1"></script>
 <script>
 (()=>{'use strict';
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
@@ -427,15 +428,21 @@ function renderStatus(){
   ['#health','#health2','#areas','#task-groups','#firsts','#task-tiles'].forEach(s=>$(s).innerHTML='<div class="quiet">Unavailable.</div>');
   $('#shelf-title').textContent=mine.length+' need you';return;
  }
- {const n0=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'})),d0=new Date(n0);d0.setHours(n0.getHours()>=21?21:7,10,0,0);const l0=new Date(new Date(L.asOfISO).toLocaleString('en-US',{timeZone:'America/New_York'}));
-  // An old snapshot proves nothing about today: once the ledger is stale, a past OK is shown as Unknown.
-  if((n0>=d0&&l0<new Date(d0-40*6e4))||(Date.now()-Date.parse(L.asOfISO))/36e5>26)L.areas.forEach(a=>a.tasks.forEach(t=>{if(t.s==='ok')t.s='norec'}));}
- const tasks=L.areas.flatMap(a=>a.tasks),c=count(tasks),tot=tasks.length,asof=fmtAsOf(L.asOfISO)||'unknown';
- const ageH=(Date.now()-Date.parse(L.asOfISO))/36e5;
- $$('[data-asof]').forEach(e=>e.textContent='Updated '+asof);
- const top=$('#asof-top');if(top)top.textContent='Updated '+asof;const rail=$('#asof-rail');if(rail)rail.textContent='Task status updated '+asof+'. Read-only: nothing here trades, lists or runs a task.';
- const etNow=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));const due=new Date(etNow);due.setHours(etNow.getHours()>=21?21:7,10,0,0);const etLast=new Date(new Date(L.asOfISO).toLocaleString('en-US',{timeZone:'America/New_York'}));const missedRefresh=etNow>=due&&etLast<new Date(due-40*6e4);/* the ledger is written 15 min before each refresh, so compare with the sync slot, not the refresh time */
- $('#stale').innerHTML=missedRefresh||ageH>26?`<div class="notice">${I('alert')}<div>${missedRefresh?'Scheduled status update missing: the latest published ledger predates the '+(due.getHours()===7?'7:10 AM':'9:10 PM')+' ET refresh.':'Stale: no status refresh in '+Math.floor(ageH)+' hours.'} Last recorded task snapshot: ${esc(asof)}. Do not treat the verification time on an individual item as proof that the full ledger refreshed.</div></div>`:'';
+ const fresh = window.HQFreshness ? window.HQFreshness(Date.now(), L.asOfISO) : { missed: false, missedLabel: '', demote: [] };
+ const ageH = (Date.now() - Date.parse(L.asOfISO)) / 36e5;
+ const hardStale = fresh.missed || ageH > 26;
+ // A stale snapshot proves nothing: past OK becomes Unknown. During market hours only the tasks that should already have fired today are demoted.
+ if (hardStale) L.areas.forEach(a => a.tasks.forEach(t => { if (t.s === 'ok') t.s = 'norec'; }));
+ else if (fresh.demote.length) { const drop = new Set(fresh.demote); L.areas.forEach(a => a.tasks.forEach(t => { if (t.s === 'ok' && drop.has(t.n)) t.s = 'norec'; })); }
+ const tasks = L.areas.flatMap(a => a.tasks), c = count(tasks), tot = tasks.length, asof = fmtAsOf(L.asOfISO) || 'unknown';
+ $$('[data-asof]').forEach(e => e.textContent = 'Updated ' + asof);
+ const top = $('#asof-top'); if (top) top.textContent = 'Updated ' + asof; const rail = $('#asof-rail'); if (rail) rail.textContent = 'Task status updated ' + asof + '. Read-only: nothing here trades, lists or runs a task.';
+ const marketNote = !hardStale && fresh.demote.length;
+ $('#stale').innerHTML = hardStale
+  ? `<div class="notice">${I('alert')}<div>${fresh.missed ? 'Scheduled status update missing: the latest published ledger predates the ' + fresh.missedLabel + ' ET refresh.' : 'Stale: no status refresh in ' + Math.floor(ageH) + ' hours.'} Last recorded task snapshot: ${esc(asof)}. Do not treat the verification time on an individual item as proof that the full ledger refreshed.</div></div>`
+  : marketNote
+  ? `<div class="notice">${I('alert')}<div>Market status is from ${esc(asof)}. Today's investing runs are not in this snapshot, so those tasks show as Unknown. The full ledger rewrite is 6:55 AM and 6:55 PM ET.</div></div>`
+  : '';
  const tile=(h,v,f,cls='')=>`<div class="stat"><div class="stat-head">${h}</div><div class="stat-val ${cls}">${v}</div><div class="stat-foot">${f}</div></div>`;
  $('#tiles').innerHTML=tile('Needs you',mine.length,'open',mine.length?'wait':'ok')+tile('Claude',tot,'tasks')+(c.fail?tile('Failed',c.fail,'last run','bad'):tile('Ran OK',c.ok,'of '+tot,'ok'))+tile('ChatGPT',gN,'tasks');
  $('#task-tiles').innerHTML=tile('Ran OK',c.ok,'of '+tot,'ok')+tile('Unknown',c.norec,'No result read',c.norec?'wait':'')+(c.fail?tile('Failed',c.fail,'Last run','bad'):tile('First run',c.new,'Pending'));
